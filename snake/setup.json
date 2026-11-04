@@ -22,7 +22,7 @@
     {"name": "tail_chase", "description": "follow the tail when the food is not safe to reach"}]}]}
  ],
  "pass_rate": 0.8,
- "budgets": {"dollars": 2.0, "attempts": 3, "episodes": 10, "max_steps": 1000},
+ "budgets": {"dollars": 4.0, "attempts": 10, "episodes": 10, "max_steps": 1000},
  "roles": {
   "coordinator": {"backend": "claude", "model": "opus", "effort": "medium"},
   "coders": [
