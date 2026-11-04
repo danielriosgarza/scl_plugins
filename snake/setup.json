@@ -1,11 +1,11 @@
 {
  "goal": "Maximize the length the snake reaches before the game ends.",
- "description": "Snake from the package gymnasium-snake-game, on a 16 by 16 grid. Cells are [x, y], x from 0 (left) to 15, y from 0 (top) to 15. The snake starts with length 5, its head at [8, 8], heading right. The action is an int, the heading: 0 up, 1 down, 2 left, 3 right; an action along the current axis (the same heading or its reverse) keeps the heading. Observables: head is the head's cell; food is the food's cell; body lists the other cells of the snake, from the neck to the tail; heading is the current heading; length is the number of cells. The snake may move into the cell its tail leaves. Eating gives reward 1 and grows the snake by one cell; running into a wall or the body gives reward -10 and ends the game; the game is cut off after 1000 steps.",
+ "description": "Snake from the package gymnasium-snake-game, on a 16 by 16 grid. Cells are [x, y], x from 0 (left) to 15, y from 0 (top) to 15. The snake starts with length 5, its head at [8, 8], heading right. The action is an int, the heading: 0 up, 1 down, 2 left, 3 right; an action along the current axis (the same heading or its reverse) keeps the heading. Observables: head is the head's cell; food is the food's cell; body lists the other cells of the snake, from the neck to the tail; heading is the current heading; length is the number of cells. The snake may move into the cell its tail leaves. Eating gives reward 1 and grows the snake by one cell; running into a wall or the body gives reward -10 and ends the game; the game is cut off after 5000 steps.",
  "environment": "snake_plugin:SnakeEnv",
- "kwargs": {"size": 16, "max_step": 1000},
+ "kwargs": {"size": 16, "max_step": 5000},
  "observables": ["head", "food", "body", "heading", "length"],
  "step_deadline": null,
- "timeout": 60,
+ "timeout": 120,
  "baseline": {
   "conditions": {"straight": "programs/straight", "square": "programs/square"},
   "seeds": [0, 1, 2]
@@ -22,7 +22,7 @@
     {"name": "tail_chase", "description": "follow the tail when the food is not safe to reach"}]}]}
  ],
  "pass_rate": 0.8,
- "budgets": {"dollars": 4.0, "attempts": 10, "episodes": 10, "max_steps": 1000},
+ "budgets": {"dollars": 4.0, "attempts": 10, "episodes": 10, "max_steps": 5000},
  "roles": {
   "coordinator": {"backend": "claude", "model": "opus", "effort": "medium"},
   "coders": [
