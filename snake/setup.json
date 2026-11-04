@@ -22,16 +22,22 @@
     {"name": "tail_chase", "description": "follow the tail when the food is not safe to reach"}]}]}
  ],
  "pass_rate": 0.8,
- "budgets": {"dollars": 5.0, "attempts": 10, "episodes": 10, "max_steps": 1000},
+ "budgets": {"dollars": 2.0, "attempts": 3, "episodes": 10, "max_steps": 1000},
  "roles": {
   "coordinator": {"backend": "claude", "model": "opus", "effort": "medium"},
   "coders": [
-   {"backend": "codex", "model": "set-on-pc-codex"},
+   {"backend": "codex", "model": "gpt-6.1-sol", "effort": "medium"},
    {"backend": "claude", "model": "haiku", "effort": "medium"},
-   {"backend": "gemini", "model": "set-on-pc-gemini"}
+   {"backend": "agy", "model": "gemini-4-argon", "effort": "medium"}
   ],
   "reviewer": {"backend": "claude", "model": "sonnet", "effort": "medium"},
   "skill_agent": {"backend": "claude", "model": "opus", "effort": "medium"}
  },
- "prices": {}
+ "prices": {
+  "opus": {"input": 4.0, "output": 20.0, "cached": 0.2},
+  "sonnet": {"input": 2.0, "output": 10.0, "cached": 0.2},
+  "haiku": {"input": 0.1, "output": 0.5},
+  "gpt-6.1-sol": {"input": 2.0, "output": 10.0, "cached": 0.1},
+  "gemini-4-argon": {"input": 2.0, "output": 10.0}
+ }
 }
