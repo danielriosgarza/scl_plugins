@@ -1,0 +1,19 @@
+[project]
+name = "snake-plugin"
+version = "0.1.0"
+description = "The Snake game of gymnasium-snake-game as a soft_control_loop plugin."
+requires-python = ">=3.11"
+dependencies = [
+    "soft-control-loop",
+    "gymnasium-snake-game==0.2.1",
+]
+
+[tool.uv.sources]
+soft-control-loop = { path = "../../soft_control_loop", editable = true }
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
