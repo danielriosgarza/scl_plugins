@@ -1,0 +1,69 @@
+Make the anaerobic digester of microbesGYM's control study A1 a soft_control_loop plugin. The plugin
+mirrors A1's aligned experiment exactly: the same digester, lever, signals, timing, limits and score.
+The user has already agreed every choice below with their assistant. Follow them as written; ask the
+user only if one of them cannot be met, and say why.
+
+Goal of the loop: maximize the digester's methane outflow over 100 days without ever leaving its
+operating limits (pH at least 6.5 and total VFA at most 1.0 kgCOD/m3 at every decision). An episode
+that leaves the limits even once scores 0. (Such an episode still ends normally, truncated after
+decision 400; it is not a crash of the program.)
+
+1. Environment. Wrap microbesGYM's A1 environment (mgym_engine.rl.GymEnv built from mgym_studies'
+   A1 documents, aligned variant, reference backend); do not copy or change it. The context file
+   gives the exact calls. The environment class takes no required keyword arguments.
+
+2. Lever. The action is a list with one float, the controlled pump's feed in m3/d: action_space is
+   Box([0.0], [255.0]). The wrapper converts it to the experiment's normalized action. The pump starts
+   every episode at 85 m3/d, and the engine moves it at most 34 m3/d towards the commanded feed at
+   each decision. The plant's own influent arrives on a fixed schedule that is the same in every
+   episode; its composition is drawn at random per episode and is never observed.
+
+3. Timing. A decision every 6 hours, 400 decisions (100 days). The episode ends early only through
+   A1's own termination (the digester soured); otherwise it is truncated after decision 400 (A1 also
+   truncates an episode if its solver fails). The record of item 6 is filled in whenever the episode
+   ends, terminated or truncated.
+
+4. Observation (a dict). day: the decision number times 0.25 (0 at the reset). For each of the eight
+   signals ch4_flow and co2_flow (gas meter, m3/d), ch4_pressure (methane partial pressure, bar),
+   vfa_s_va, vfa_s_bu, vfa_s_pro and vfa_s_ac (valerate, butyrate, propionate and acetate assays,
+   kgCOD/m3, which is the experiment's kgCOD/L times 1000) and inorganic_carbon (assay, mM): the
+   newest reading, decoded as the context file shows, and 0.0 while the signal has no value yet.
+   assay_age: an int, the number of decisions since the newest assay values arrived, or -1 before
+   the first.
+   The gas signals arrive at every decision, so they need no age. The five assays arrive together
+   every fourth decision, each sampled four decisions before it arrives, so the first ones arrive
+   at decision 4 and share one age. Readings carry A1's measurement noise. A program sees nothing
+   else: no true state and no influent composition.
+
+5. Reward. At each decision the reward is the true methane outflow (m3/d) after the step, read from
+   the true state as A1's own evaluation reads it. It is not the engine's reward.
+
+6. Episode record. The observation also has the keys mean_ch4_flow, min_ph, max_total_vfa,
+   first_out and score. They are None at every step and are filled in only in the observation that
+   ends the episode, which no program acts on: the mean true methane outflow over the decisions,
+   the lowest true pH, the highest true total VFA (kgCOD/m3), the number (from 1) of the first
+   decision outside the limits or None, and A1's score (the mean true methane outflow if first_out
+   is None, else 0). Checks read them from trace.final_observation, which holds only the declared
+   observables, so setup.json's observables must list every key of items 4 and 6.
+
+7. Seeds. Debug 1001 and 1002; evaluation 5001 to 5010; baseline 6001, 6002 and 6003. Seeds 1001 to
+   1008 and 6001 to 6020 use A1's training draws, every other seed its validation draws; every
+   episode runs in stochastic mode.
+
+8. Limits and budgets. max_steps 400; timeout 600 seconds per episode (an episode takes about
+   30 seconds); step_deadline null; pass_rate 1.0, because an episode that leaves the limits scores
+   0; explore 3; budgets: dollars 6, attempts 15, episodes 10.
+
+9. Baseline conditions, each a program that ignores the observation: hold_0, hold_64, hold_128,
+   hold_192 and hold_255 command that feed (m3/d) at every decision; step_64_192 commands 64 for
+   decisions 0 to 199 and 192 from decision 200 (day 50), counting its decisions in its memory.
+
+10. First milestones. within_limits: the episode ran all 400 decisions and never left the limits
+    (first_out is None). within_limits_2000: within_limits, and mean_ch4_flow is at least 2000 m3/d.
+    Propose subgoals and strategies for each from the baseline traces.
+
+11. The description in setup.json must tell the coordinator, in these words or close to them:
+    "A1's published results (its baseline ladder, tuned controllers, learned agents and reports) are
+    not targets. Do not use them for the goal or any milestone. Set each new milestone above what
+    this loop's own best program reaches, and keep raising it: the goal is the most methane within
+    the limits, not beating a reference."

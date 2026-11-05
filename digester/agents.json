@@ -1,0 +1,76 @@
+{
+ "setup_agent": {
+  "backend": "claude",
+  "model": "opus",
+  "effort": "medium"
+ },
+ "setup_reviewers": [
+  {
+   "backend": "claude",
+   "model": "sonnet",
+   "effort": "medium"
+  },
+  {
+   "backend": "codex",
+   "model": "gpt-6.1-sol",
+   "effort": "medium"
+  }
+ ],
+ "coordinator": {
+  "backend": "claude",
+  "model": "opus",
+  "effort": "medium"
+ },
+ "coders": [
+  {
+   "backend": "codex",
+   "model": "gpt-6.1-sol",
+   "effort": "medium"
+  },
+  {
+   "backend": "claude",
+   "model": "haiku",
+   "effort": "medium"
+  },
+  {
+   "backend": "agy",
+   "model": "gemini-4-argon",
+   "effort": "medium"
+  }
+ ],
+ "reviewer": {
+  "backend": "claude",
+  "model": "sonnet",
+  "effort": "medium"
+ },
+ "skill_agent": {
+  "backend": "claude",
+  "model": "opus",
+  "effort": "medium"
+ },
+ "prices": {
+  "opus": {
+   "input": 4.0,
+   "output": 20.0,
+   "cached": 0.2
+  },
+  "sonnet": {
+   "input": 2.0,
+   "output": 10.0,
+   "cached": 0.2
+  },
+  "haiku": {
+   "input": 0.1,
+   "output": 0.5
+  },
+  "gpt-6.1-sol": {
+   "input": 2.0,
+   "output": 10.0,
+   "cached": 0.1
+  },
+  "gemini-4-argon": {
+   "input": 2.0,
+   "output": 10.0
+  }
+ }
+}
