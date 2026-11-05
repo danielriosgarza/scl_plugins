@@ -129,7 +129,7 @@
  "explore": 3,
  "budgets": {
   "dollars": 6,
-  "attempts": 15,
+  "attempts": 21,
   "episodes": 10,
   "max_steps": 400
  },
