@@ -15,14 +15,17 @@
   {"name": "first_food", "description": "the snake eats at least one food", "subgoals": [
    {"name": "reach_food", "description": "move the head to the food without dying", "strategies": [
     {"name": "greedy", "description": "step towards the food along x, then y"},
-    {"name": "safe_greedy", "description": "step towards the food, never into a wall or the body"}]}]},
+    {"name": "safe_greedy", "description": "step towards the food, never into a wall or the body"},
+    {"name": "shortest_path", "description": "follow a shortest path to the food, found by breadth-first search around the body"}]}]},
   {"name": "length_15", "description": "the snake reaches length 15", "subgoals": [
    {"name": "survive", "description": "keep eating without trapping itself", "strategies": [
     {"name": "flood_fill", "description": "prefer moves that leave the most free cells reachable"},
-    {"name": "tail_chase", "description": "follow the tail when the food is not safe to reach"}]}]}
+    {"name": "tail_chase", "description": "follow the tail when the food is not safe to reach"},
+    {"name": "cycle", "description": "follow a fixed cycle through every cell, cutting across it towards the food only when safe"}]}]}
  ],
  "pass_rate": 0.8,
- "budgets": {"dollars": 4.0, "attempts": 10, "episodes": 10, "max_steps": 5000},
+ "budgets": {"dollars": 6.0, "attempts": 15, "episodes": 10, "max_steps": 5000},
+ "explore": 3,
  "roles": {
   "coordinator": {"backend": "claude", "model": "opus", "effort": "medium"},
   "coders": [
