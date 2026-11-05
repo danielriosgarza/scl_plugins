@@ -1,0 +1,15 @@
+[project]
+name = "digester-plugin"
+version = "0.1.0"
+description = "The anaerobic digester of microbesGYM's control study A1 as a soft_control_loop plugin."
+requires-python = ">=3.12"
+dependencies = [
+    "soft-control-loop",
+    "mgym-engine",
+    "mgym-studies",
+]
+
+[tool.uv.sources]
+soft-control-loop = { path = "../../soft_control_loop", editable = true }
+mgym-engine = { path = "../../microbesGYM_v2/packages/mgym-engine", editable = true }
+mgym-studies = { path = "../../microbesGYM_v2/packages/mgym-studies", editable = true }
