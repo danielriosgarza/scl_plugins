@@ -60,7 +60,9 @@ decision 400; it is not a crash of the program.)
 
 10. First milestones. within_limits: the episode ran all 400 decisions and never left the limits
     (first_out is None). within_limits_2000: within_limits, and mean_ch4_flow is at least 2000 m3/d.
-    Propose subgoals and strategies for each from the baseline traces.
+    Propose subgoals and strategies for each. The baseline has not played before the first
+    draft, so base the first proposals on the task and the context file, and revise them
+    from the baseline summaries once a round has played them.
 
 11. The description in setup.json must tell the coordinator, in these words or close to them:
     "A1's published results (its baseline ladder, tuned controllers, learned agents and reports) are
