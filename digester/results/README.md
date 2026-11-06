@@ -21,14 +21,14 @@ replays any of them. Everything here was produced on Daniel's PC with this folde
 
 | seed_set | Seeds | Role |
 |---|---|---|
-| `eval_5001_5030` | 5001-5030 | the loop's evaluation seeds in runs 5 to 7; programs were selected on them |
+| `eval_5001_5030` | 5001-5030 | evaluation seeds of runs 5 to 7, used to select programs |
 | `heldout_5031_5060` | 5031-5060 | held out |
 | `heldout_5061_5110` | 5061-5110 | held out, never looked at before attempt 027 was chosen |
 | `a1_7001_7050` | 7001-7050 | A1's own seeds, held out |
 
-Runs 1 to 4 evaluated on 5001-5010 only. Their rows for 5011-5030 come from later held-out replays
-but carry the label `eval_5001_5030`. Those replays predate game over, but none of their episodes left
-the limits, so their values are the same with it.
+Runs 1 to 4 evaluated on 5001-5010 only. Their rows for 5011-5030 come from later held-out
+replays but carry the label `eval_5001_5030`. Those replays predate game over, but none of their
+episodes left the limits, so their values are the same with it.
 
 ## Results on A1's seeds 7001-7050
 
