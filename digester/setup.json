@@ -268,18 +268,25 @@
   },
   "coders": [
    {
+    "backend": "agy",
+    "model": "gemini-4-argon",
+    "effort": "medium",
+    "timeout": 1800
+   },
+   {
     "backend": "codex",
     "model": "gpt-6.1-sol",
     "effort": "medium"
    },
    {
-    "backend": "claude",
-    "model": "haiku",
-    "effort": "medium"
-   },
-   {
     "backend": "agy",
     "model": "gemini-4-argon",
+    "effort": "medium",
+    "timeout": 1800
+   },
+   {
+    "backend": "claude",
+    "model": "haiku",
     "effort": "medium"
    }
   ],
