@@ -1,9 +1,11 @@
-"""The stage checks of the digester: one batch check for each stage of the episode.
+"""The stage checks of the digester: one batch check for each stage of the episode, then
+three on the whole episode.
 
 A stage ends after decision last. An episode reaches it if it ran at least last decisions and
 had not left the limits by then (first_out is None or above last). The stage is met when every
 evaluation episode reaches it and the mean over the episodes of the mean step reward (true
-methane, m3/d) over decisions 1 to last is at least the stage's mark.
+methane, m3/d) over decisions 1 to last is at least the stage's mark. The checks on the whole
+episode are stages that end after decision 400, with higher marks.
 """
 
 
@@ -23,38 +25,41 @@ def stage(last, mark):
     return check
 
 
-check_day_2 = stage(8, 2304)
-check_day_4 = stage(16, 2418)
-check_day_6 = stage(24, 2470)
-check_day_8 = stage(32, 2517)
-check_day_10 = stage(40, 2602)
-check_day_13 = stage(52, 2674)
-check_day_16 = stage(64, 2706)
-check_day_19 = stage(76, 2744)
-check_day_22 = stage(88, 2758)
-check_day_25 = stage(100, 2788)
-check_day_28 = stage(112, 2801)
-check_day_31 = stage(124, 2821)
-check_day_34 = stage(136, 2835)
-check_day_37 = stage(148, 2845)
-check_day_40 = stage(160, 2859)
-check_day_43 = stage(172, 2863)
-check_day_46 = stage(184, 2874)
-check_day_49 = stage(196, 2877)
-check_day_52 = stage(208, 2884)
-check_day_55 = stage(220, 2888)
-check_day_58 = stage(232, 2891)
-check_day_61 = stage(244, 2898)
-check_day_64 = stage(256, 2898)
-check_day_67 = stage(268, 2907)
-check_day_70 = stage(280, 2907)
-check_day_73 = stage(292, 2914)
-check_day_76 = stage(304, 2916)
-check_day_79 = stage(316, 2919)
-check_day_82 = stage(328, 2923)
-check_day_85 = stage(340, 2922)
-check_day_88 = stage(352, 2928)
-check_day_91 = stage(364, 2927)
-check_day_94 = stage(376, 2931)
-check_day_97 = stage(388, 2932)
-check_day_100 = stage(400, 2933)
+check_day_2 = stage(8, 2463)
+check_day_4 = stage(16, 2570)
+check_day_6 = stage(24, 2574)
+check_day_8 = stage(32, 2568)
+check_day_10 = stage(40, 2597)
+check_day_13 = stage(52, 2617)
+check_day_16 = stage(64, 2633)
+check_day_19 = stage(76, 2662)
+check_day_22 = stage(88, 2668)
+check_day_25 = stage(100, 2692)
+check_day_28 = stage(112, 2700)
+check_day_31 = stage(124, 2719)
+check_day_34 = stage(136, 2733)
+check_day_37 = stage(148, 2744)
+check_day_40 = stage(160, 2761)
+check_day_43 = stage(172, 2766)
+check_day_46 = stage(184, 2780)
+check_day_49 = stage(196, 2785)
+check_day_52 = stage(208, 2793)
+check_day_55 = stage(220, 2801)
+check_day_58 = stage(232, 2807)
+check_day_61 = stage(244, 2818)
+check_day_64 = stage(256, 2820)
+check_day_67 = stage(268, 2827)
+check_day_70 = stage(280, 2829)
+check_day_73 = stage(292, 2835)
+check_day_76 = stage(304, 2840)
+check_day_79 = stage(316, 2843)
+check_day_82 = stage(328, 2850)
+check_day_85 = stage(340, 2851)
+check_day_88 = stage(352, 2857)
+check_day_91 = stage(364, 2858)
+check_day_94 = stage(376, 2863)
+check_day_97 = stage(388, 2866)
+check_day_100 = stage(400, 2869)
+check_plus_6 = stage(400, 2924)
+check_plus_8 = stage(400, 2979)
+check_plus_10 = stage(400, 3034)
