@@ -1,8 +1,10 @@
 {
- "goal": "Maximize the digester's mean true methane outflow (m3/d) over 100 days (400 decisions) without ever leaving its operating limits: pH at least 6.5 and total VFA at most 1.0 kgCOD/m3 at every decision. An episode that leaves the limits ends at that decision (game over) and scores 0. The goal is the mean score over the evaluation episodes.",
- "description": "microbesGYM's A1 anaerobic digester (study control_a1_loading, aligned experiment, reference backend), wrapped unchanged. One decision every 6 hours, 400 decisions (100 days). An episode ends at the first decision whose true state is outside the limits (game over: it terminates there, first_out is that decision and the score is 0), or through A1's own termination (the digester soured); otherwise it is truncated after decision 400 (A1 also truncates an episode if its solver fails). So the number of steps of an episode tells how far it got, and its total reward is the methane made until it ended. ACTION: a list with one float, the controlled pump's feed command in m3/d, from 0 to 255. The pump starts every episode at 85 m3/d and moves at most 34 m3/d towards the command at each decision. The plant's own influent arrives on a fixed schedule that is the same in every episode; its composition is drawn at random per episode and is never observed. REWARD: the true methane outflow (m3/d) after each step. OBSERVABLES (readings carry A1's measurement noise; no true state and no influent composition are observed): day = decision number x 0.25 (0 at the reset). ch4_flow, co2_flow = gas meter, m3/d, a new reading at every decision. ch4_pressure = methane partial pressure, bar, at every decision. vfa_s_va, vfa_s_bu, vfa_s_pro, vfa_s_ac = valerate, butyrate, propionate and acetate assays, kgCOD/m3. inorganic_carbon = assay, mM. The five assays arrive together every fourth decision (first at decision 4), each sampled four decisions before it arrives, so the newest assay describes the digester as it was 4 to 7 decisions earlier; they read 0.0 before the first arrives. assay_age = int, decisions since the newest assays arrived (0 on arrival, then 1 to 3), -1 before the first. The sum of the four VFA assays approximates (with noise) total VFA, the limited quantity; pH is not observed. EPISODE RECORD (None at every step, filled in only in the observation that ends the episode, which no program acts on): mean_ch4_flow = mean true methane outflow over the decisions, m3/d; min_ph = lowest true pH; max_total_vfa = highest true total VFA, kgCOD/m3; first_out = number (from 1) of the first decision outside the limits, or None; score = A1's score, mean_ch4_flow if first_out is None, else 0. The max_total_vfa of an episode that stayed within the limits shows how much of the room below 1.0 the program left unused; that room is methane not made. SEEDS: 1001-1008 and 6001-6020 use A1's training draws, every other seed its validation draws, so the evaluation seeds 5001-5060 are validation draws that the baseline seeds do not cover; every episode runs in stochastic mode. A1's published results (its baseline ladder, tuned controllers, learned agents and reports) are not targets. Do not use them for the goal or any milestone. Set each new milestone above what this loop's own best program reaches, and keep raising it: the goal is the most methane within the limits, not beating a reference.",
+ "goal": "Maximize the digester's mean true methane outflow (m3/d) over 40 days (160 decisions) without ever leaving its operating limits: pH at least 6.5 and total VFA at most 1.0 kgCOD/m3 at every decision. An episode that leaves the limits ends at that decision (game over) and scores 0. The goal is the mean score over the evaluation episodes.",
+ "description": "microbesGYM's A1 anaerobic digester (study control_a1_loading, aligned experiment, reference backend), wrapped unchanged. One decision every 6 hours, 160 decisions (40 days); A1's own episodes run 400 decisions (100 days), and the setup's kwargs shorten them. An episode ends at the first decision whose true state is outside the limits (game over: it terminates there, first_out is that decision and the score is 0), or through A1's own termination (the digester soured); otherwise it is truncated after decision 160 (A1 also truncates an episode if its solver fails). So the number of steps of an episode tells how far it got, and its total reward is the methane made until it ended. ACTION: a list with one float, the controlled pump's feed command in m3/d, from 0 to 255. The pump starts every episode at 85 m3/d and moves at most 34 m3/d towards the command at each decision. The plant's own influent arrives on a fixed schedule that is the same in every episode; its composition is drawn at random per episode and is never observed. REWARD: the true methane outflow (m3/d) after each step. OBSERVABLES (readings carry A1's measurement noise; no true state and no influent composition are observed): day = decision number x 0.25 (0 at the reset). ch4_flow, co2_flow = gas meter, m3/d, a new reading at every decision. ch4_pressure = methane partial pressure, bar, at every decision. vfa_s_va, vfa_s_bu, vfa_s_pro, vfa_s_ac = valerate, butyrate, propionate and acetate assays, kgCOD/m3. inorganic_carbon = assay, mM. The five assays arrive together every fourth decision (first at decision 4), each sampled four decisions before it arrives, so the newest assay describes the digester as it was 4 to 7 decisions earlier; they read 0.0 before the first arrives. assay_age = int, decisions since the newest assays arrived (0 on arrival, then 1 to 3), -1 before the first. The sum of the four VFA assays approximates (with noise) total VFA, the limited quantity; pH is not observed. EPISODE RECORD (None at every step, filled in only in the observation that ends the episode, which no program acts on): mean_ch4_flow = mean true methane outflow over the decisions, m3/d; min_ph = lowest true pH; max_total_vfa = highest true total VFA, kgCOD/m3; first_out = number (from 1) of the first decision outside the limits, or None; score = A1's score, mean_ch4_flow if first_out is None, else 0. The max_total_vfa of an episode that stayed within the limits shows how much of the room below 1.0 the program left unused; that room is methane not made. SEEDS: 1001-1008 and 6001-6020 use A1's training draws, every other seed its validation draws, so the evaluation seeds 5001-5060 are validation draws that the baseline seeds do not cover; every episode runs in stochastic mode. A1's published results (its baseline ladder, tuned controllers, learned agents and reports) are not targets. Do not use them for the goal or any milestone. Set each new milestone above what this loop's own best program reaches, and keep raising it: the goal is the most methane within the limits, not beating a reference.",
  "environment": "a1_digester:A1Digester",
- "kwargs": {},
+ "kwargs": {
+  "decisions": 160
+ },
  "observables": [
   "day",
   "ch4_flow",
@@ -108,192 +110,92 @@
  "milestones": [
   {
    "name": "day_2",
-   "description": "Stage to day 2 (decisions 1 to 8): every evaluation episode is still within the limits after decision 8 (it ran at least 8 decisions and its first_out is None or above 8), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 8 is at least 2416. The batch check check_day_2 in the checks file tests it. The best program of an earlier run of this loop averaged 2414 over decisions 1 to 8 on these seeds, so the mark asks for 0.1% more. Baseline evidence (seeds 6001/6002/6003, training draws): min_ph never fell below 7.32 in any condition, so total VFA is the binding limit. hold_128 stayed within the limits on all three seeds (max total VFA at most 0.58); hold_192 left the VFA limit on seed 6002 at decision 12 (max total VFA 1.29), hold_255 on seeds 6002 and 6003 at decisions 8 and 12, and step_64_192 on seed 6002 at decision 213, 13 decisions after its step. The assays that arrive at decisions 4, 8 and 12 describe the digester at decisions 0, 4 and 8.",
+   "description": "Stage to day 2 (decisions 1 to 8): every evaluation episode is still within the limits after decision 8 (it ran at least 8 decisions and its first_out is None or above 8), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 8 is at least 2419. The batch check check_day_2 in the checks file tests it. The best program of an earlier run of this loop averaged 2414 over decisions 1 to 8 on these seeds, so the mark asks for 0.2% more. Baseline evidence (seeds 6001/6002/6003, training draws): min_ph never fell below 7.32 in any condition, so total VFA is the binding limit. hold_128 stayed within the limits on all three seeds (max total VFA at most 0.58); hold_192 left the VFA limit on seed 6002 at decision 12 (max total VFA 1.29), hold_255 on seeds 6002 and 6003 at decisions 8 and 12, and step_64_192 on seed 6002 at decision 213, 13 decisions after its step. In 40-day episodes step_64_192 never reaches its step at decision 200, so it plays like hold_64. The assays that arrive at decisions 4, 8 and 12 describe the digester at decisions 0, 4 and 8.",
    "subgoals": []
   },
   {
    "name": "day_4",
-   "description": "Stage to day 4 (decisions 1 to 16): every evaluation episode is still within the limits after decision 16 (it ran at least 16 decisions and its first_out is None or above 16), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 16 is at least 2522. The batch check check_day_4 in the checks file tests it. The best program of an earlier run of this loop averaged 2518 over decisions 1 to 16 on these seeds, so the mark asks for 0.2% more.",
+   "description": "Stage to day 4 (decisions 1 to 16): every evaluation episode is still within the limits after decision 16 (it ran at least 16 decisions and its first_out is None or above 16), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 16 is at least 2528. The batch check check_day_4 in the checks file tests it. The best program of an earlier run of this loop averaged 2518 over decisions 1 to 16 on these seeds, so the mark asks for 0.4% more.",
    "subgoals": []
   },
   {
    "name": "day_6",
-   "description": "Stage to day 6 (decisions 1 to 24): every evaluation episode is still within the limits after decision 24 (it ran at least 24 decisions and its first_out is None or above 24), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 24 is at least 2527. The batch check check_day_6 in the checks file tests it. The best program of an earlier run of this loop averaged 2521 over decisions 1 to 24 on these seeds, so the mark asks for 0.2% more.",
+   "description": "Stage to day 6 (decisions 1 to 24): every evaluation episode is still within the limits after decision 24 (it ran at least 24 decisions and its first_out is None or above 24), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 24 is at least 2536. The batch check check_day_6 in the checks file tests it. The best program of an earlier run of this loop averaged 2521 over decisions 1 to 24 on these seeds, so the mark asks for 0.6% more.",
    "subgoals": []
   },
   {
    "name": "day_8",
-   "description": "Stage to day 8 (decisions 1 to 32): every evaluation episode is still within the limits after decision 32 (it ran at least 32 decisions and its first_out is None or above 32), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 32 is at least 2522. The batch check check_day_8 in the checks file tests it. The best program of an earlier run of this loop averaged 2514 over decisions 1 to 32 on these seeds, so the mark asks for 0.3% more.",
+   "description": "Stage to day 8 (decisions 1 to 32): every evaluation episode is still within the limits after decision 32 (it ran at least 32 decisions and its first_out is None or above 32), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 32 is at least 2534. The batch check check_day_8 in the checks file tests it. The best program of an earlier run of this loop averaged 2514 over decisions 1 to 32 on these seeds, so the mark asks for 0.8% more.",
    "subgoals": []
   },
   {
    "name": "day_10",
-   "description": "Stage to day 10 (decisions 1 to 40): every evaluation episode is still within the limits after decision 40 (it ran at least 40 decisions and its first_out is None or above 40), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 40 is at least 2551. The batch check check_day_10 in the checks file tests it. The best program of an earlier run of this loop averaged 2541 over decisions 1 to 40 on these seeds, so the mark asks for 0.4% more.",
+   "description": "Stage to day 10 (decisions 1 to 40): every evaluation episode is still within the limits after decision 40 (it ran at least 40 decisions and its first_out is None or above 40), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 40 is at least 2566. The batch check check_day_10 in the checks file tests it. The best program of an earlier run of this loop averaged 2541 over decisions 1 to 40 on these seeds, so the mark asks for 1.0% more.",
    "subgoals": []
   },
   {
    "name": "day_13",
-   "description": "Stage to day 13 (decisions 1 to 52): every evaluation episode is still within the limits after decision 52 (it ran at least 52 decisions and its first_out is None or above 52), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 52 is at least 2573. The batch check check_day_13 in the checks file tests it. The best program of an earlier run of this loop averaged 2559 over decisions 1 to 52 on these seeds, so the mark asks for 0.5% more.",
+   "description": "Stage to day 13 (decisions 1 to 52): every evaluation episode is still within the limits after decision 52 (it ran at least 52 decisions and its first_out is None or above 52), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 52 is at least 2593. The batch check check_day_13 in the checks file tests it. The best program of an earlier run of this loop averaged 2559 over decisions 1 to 52 on these seeds, so the mark asks for 1.3% more.",
    "subgoals": []
   },
   {
    "name": "day_16",
-   "description": "Stage to day 16 (decisions 1 to 64): every evaluation episode is still within the limits after decision 64 (it ran at least 64 decisions and its first_out is None or above 64), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 64 is at least 2589. The batch check check_day_16 in the checks file tests it. The best program of an earlier run of this loop averaged 2573 over decisions 1 to 64 on these seeds, so the mark asks for 0.6% more.",
+   "description": "Stage to day 16 (decisions 1 to 64): every evaluation episode is still within the limits after decision 64 (it ran at least 64 decisions and its first_out is None or above 64), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 64 is at least 2614. The batch check check_day_16 in the checks file tests it. The best program of an earlier run of this loop averaged 2573 over decisions 1 to 64 on these seeds, so the mark asks for 1.6% more.",
    "subgoals": []
   },
   {
    "name": "day_19",
-   "description": "Stage to day 19 (decisions 1 to 76): every evaluation episode is still within the limits after decision 76 (it ran at least 76 decisions and its first_out is None or above 76), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 76 is at least 2620. The batch check check_day_19 in the checks file tests it. The best program of an earlier run of this loop averaged 2600 over decisions 1 to 76 on these seeds, so the mark asks for 0.8% more.",
+   "description": "Stage to day 19 (decisions 1 to 76): every evaluation episode is still within the limits after decision 76 (it ran at least 76 decisions and its first_out is None or above 76), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 76 is at least 2650. The batch check check_day_19 in the checks file tests it. The best program of an earlier run of this loop averaged 2600 over decisions 1 to 76 on these seeds, so the mark asks for 1.9% more.",
    "subgoals": []
   },
   {
    "name": "day_22",
-   "description": "Stage to day 22 (decisions 1 to 88): every evaluation episode is still within the limits after decision 88 (it ran at least 88 decisions and its first_out is None or above 88), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 88 is at least 2627. The batch check check_day_22 in the checks file tests it. The best program of an earlier run of this loop averaged 2604 over decisions 1 to 88 on these seeds, so the mark asks for 0.9% more.",
+   "description": "Stage to day 22 (decisions 1 to 88): every evaluation episode is still within the limits after decision 88 (it ran at least 88 decisions and its first_out is None or above 88), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 88 is at least 2662. The batch check check_day_22 in the checks file tests it. The best program of an earlier run of this loop averaged 2604 over decisions 1 to 88 on these seeds, so the mark asks for 2.2% more.",
    "subgoals": []
   },
   {
    "name": "day_25",
-   "description": "Stage to day 25 (decisions 1 to 100): every evaluation episode is still within the limits after decision 100 (it ran at least 100 decisions and its first_out is None or above 100), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 100 is at least 2652. The batch check check_day_25 in the checks file tests it. The best program of an earlier run of this loop averaged 2626 over decisions 1 to 100 on these seeds, so the mark asks for 1.0% more.",
+   "description": "Stage to day 25 (decisions 1 to 100): every evaluation episode is still within the limits after decision 100 (it ran at least 100 decisions and its first_out is None or above 100), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 100 is at least 2692. The batch check check_day_25 in the checks file tests it. The best program of an earlier run of this loop averaged 2626 over decisions 1 to 100 on these seeds, so the mark asks for 2.5% more.",
    "subgoals": []
   },
   {
    "name": "day_28",
-   "description": "Stage to day 28 (decisions 1 to 112): every evaluation episode is still within the limits after decision 112 (it ran at least 112 decisions and its first_out is None or above 112), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 112 is at least 2662. The batch check check_day_28 in the checks file tests it. The best program of an earlier run of this loop averaged 2633 over decisions 1 to 112 on these seeds, so the mark asks for 1.1% more.",
+   "description": "Stage to day 28 (decisions 1 to 112): every evaluation episode is still within the limits after decision 112 (it ran at least 112 decisions and its first_out is None or above 112), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 112 is at least 2707. The batch check check_day_28 in the checks file tests it. The best program of an earlier run of this loop averaged 2633 over decisions 1 to 112 on these seeds, so the mark asks for 2.8% more.",
    "subgoals": []
   },
   {
    "name": "day_31",
-   "description": "Stage to day 31 (decisions 1 to 124): every evaluation episode is still within the limits after decision 124 (it ran at least 124 decisions and its first_out is None or above 124), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 124 is at least 2682. The batch check check_day_31 in the checks file tests it. The best program of an earlier run of this loop averaged 2650 over decisions 1 to 124 on these seeds, so the mark asks for 1.2% more.",
+   "description": "Stage to day 31 (decisions 1 to 124): every evaluation episode is still within the limits after decision 124 (it ran at least 124 decisions and its first_out is None or above 124), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 124 is at least 2732. The batch check check_day_31 in the checks file tests it. The best program of an earlier run of this loop averaged 2650 over decisions 1 to 124 on these seeds, so the mark asks for 3.1% more.",
    "subgoals": []
   },
   {
    "name": "day_34",
-   "description": "Stage to day 34 (decisions 1 to 136): every evaluation episode is still within the limits after decision 136 (it ran at least 136 decisions and its first_out is None or above 136), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 136 is at least 2698. The batch check check_day_34 in the checks file tests it. The best program of an earlier run of this loop averaged 2662 over decisions 1 to 136 on these seeds, so the mark asks for 1.4% more.",
+   "description": "Stage to day 34 (decisions 1 to 136): every evaluation episode is still within the limits after decision 136 (it ran at least 136 decisions and its first_out is None or above 136), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 136 is at least 2753. The batch check check_day_34 in the checks file tests it. The best program of an earlier run of this loop averaged 2662 over decisions 1 to 136 on these seeds, so the mark asks for 3.4% more.",
    "subgoals": []
   },
   {
    "name": "day_37",
-   "description": "Stage to day 37 (decisions 1 to 148): every evaluation episode is still within the limits after decision 148 (it ran at least 148 decisions and its first_out is None or above 148), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 148 is at least 2710. The batch check check_day_37 in the checks file tests it. The best program of an earlier run of this loop averaged 2671 over decisions 1 to 148 on these seeds, so the mark asks for 1.5% more.",
+   "description": "Stage to day 37 (decisions 1 to 148): every evaluation episode is still within the limits after decision 148 (it ran at least 148 decisions and its first_out is None or above 148), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 148 is at least 2770. The batch check check_day_37 in the checks file tests it. The best program of an earlier run of this loop averaged 2671 over decisions 1 to 148 on these seeds, so the mark asks for 3.7% more.",
    "subgoals": []
   },
   {
    "name": "day_40",
-   "description": "Stage to day 40 (decisions 1 to 160): every evaluation episode is still within the limits after decision 160 (it ran at least 160 decisions and its first_out is None or above 160), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 160 is at least 2728. The batch check check_day_40 in the checks file tests it. The best program of an earlier run of this loop averaged 2685 over decisions 1 to 160 on these seeds, so the mark asks for 1.6% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_43",
-   "description": "Stage to day 43 (decisions 1 to 172): every evaluation episode is still within the limits after decision 172 (it ran at least 172 decisions and its first_out is None or above 172), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 172 is at least 2736. The batch check check_day_43 in the checks file tests it. The best program of an earlier run of this loop averaged 2689 over decisions 1 to 172 on these seeds, so the mark asks for 1.7% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_46",
-   "description": "Stage to day 46 (decisions 1 to 184): every evaluation episode is still within the limits after decision 184 (it ran at least 184 decisions and its first_out is None or above 184), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 184 is at least 2751. The batch check check_day_46 in the checks file tests it. The best program of an earlier run of this loop averaged 2701 over decisions 1 to 184 on these seeds, so the mark asks for 1.8% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_49",
-   "description": "Stage to day 49 (decisions 1 to 196): every evaluation episode is still within the limits after decision 196 (it ran at least 196 decisions and its first_out is None or above 196), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 196 is at least 2758. The batch check check_day_49 in the checks file tests it. The best program of an earlier run of this loop averaged 2705 over decisions 1 to 196 on these seeds, so the mark asks for 2.0% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_52",
-   "description": "Stage to day 52 (decisions 1 to 208): every evaluation episode is still within the limits after decision 208 (it ran at least 208 decisions and its first_out is None or above 208), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 208 is at least 2767. The batch check check_day_52 in the checks file tests it. The best program of an earlier run of this loop averaged 2711 over decisions 1 to 208 on these seeds, so the mark asks for 2.1% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_55",
-   "description": "Stage to day 55 (decisions 1 to 220): every evaluation episode is still within the limits after decision 220 (it ran at least 220 decisions and its first_out is None or above 220), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 220 is at least 2776. The batch check check_day_55 in the checks file tests it. The best program of an earlier run of this loop averaged 2716 over decisions 1 to 220 on these seeds, so the mark asks for 2.2% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_58",
-   "description": "Stage to day 58 (decisions 1 to 232): every evaluation episode is still within the limits after decision 232 (it ran at least 232 decisions and its first_out is None or above 232), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 232 is at least 2784. The batch check check_day_58 in the checks file tests it. The best program of an earlier run of this loop averaged 2721 over decisions 1 to 232 on these seeds, so the mark asks for 2.3% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_61",
-   "description": "Stage to day 61 (decisions 1 to 244): every evaluation episode is still within the limits after decision 244 (it ran at least 244 decisions and its first_out is None or above 244), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 244 is at least 2797. The batch check check_day_61 in the checks file tests it. The best program of an earlier run of this loop averaged 2730 over decisions 1 to 244 on these seeds, so the mark asks for 2.4% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_64",
-   "description": "Stage to day 64 (decisions 1 to 256): every evaluation episode is still within the limits after decision 256 (it ran at least 256 decisions and its first_out is None or above 256), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 256 is at least 2800. The batch check check_day_64 in the checks file tests it. The best program of an earlier run of this loop averaged 2730 over decisions 1 to 256 on these seeds, so the mark asks for 2.6% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_67",
-   "description": "Stage to day 67 (decisions 1 to 268): every evaluation episode is still within the limits after decision 268 (it ran at least 268 decisions and its first_out is None or above 268), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 268 is at least 2809. The batch check check_day_67 in the checks file tests it. The best program of an earlier run of this loop averaged 2736 over decisions 1 to 268 on these seeds, so the mark asks for 2.7% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_70",
-   "description": "Stage to day 70 (decisions 1 to 280): every evaluation episode is still within the limits after decision 280 (it ran at least 280 decisions and its first_out is None or above 280), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 280 is at least 2813. The batch check check_day_70 in the checks file tests it. The best program of an earlier run of this loop averaged 2736 over decisions 1 to 280 on these seeds, so the mark asks for 2.8% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_73",
-   "description": "Stage to day 73 (decisions 1 to 292): every evaluation episode is still within the limits after decision 292 (it ran at least 292 decisions and its first_out is None or above 292), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 292 is at least 2821. The batch check check_day_73 in the checks file tests it. The best program of an earlier run of this loop averaged 2740 over decisions 1 to 292 on these seeds, so the mark asks for 2.9% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_76",
-   "description": "Stage to day 76 (decisions 1 to 304): every evaluation episode is still within the limits after decision 304 (it ran at least 304 decisions and its first_out is None or above 304), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 304 is at least 2827. The batch check check_day_76 in the checks file tests it. The best program of an earlier run of this loop averaged 2744 over decisions 1 to 304 on these seeds, so the mark asks for 3.0% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_79",
-   "description": "Stage to day 79 (decisions 1 to 316): every evaluation episode is still within the limits after decision 316 (it ran at least 316 decisions and its first_out is None or above 316), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 316 is at least 2832. The batch check check_day_79 in the checks file tests it. The best program of an earlier run of this loop averaged 2745 over decisions 1 to 316 on these seeds, so the mark asks for 3.2% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_82",
-   "description": "Stage to day 82 (decisions 1 to 328): every evaluation episode is still within the limits after decision 328 (it ran at least 328 decisions and its first_out is None or above 328), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 328 is at least 2840. The batch check check_day_82 in the checks file tests it. The best program of an earlier run of this loop averaged 2750 over decisions 1 to 328 on these seeds, so the mark asks for 3.3% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_85",
-   "description": "Stage to day 85 (decisions 1 to 340): every evaluation episode is still within the limits after decision 340 (it ran at least 340 decisions and its first_out is None or above 340), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 340 is at least 2843. The batch check check_day_85 in the checks file tests it. The best program of an earlier run of this loop averaged 2749 over decisions 1 to 340 on these seeds, so the mark asks for 3.4% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_88",
-   "description": "Stage to day 88 (decisions 1 to 352): every evaluation episode is still within the limits after decision 352 (it ran at least 352 decisions and its first_out is None or above 352), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 352 is at least 2850. The batch check check_day_88 in the checks file tests it. The best program of an earlier run of this loop averaged 2753 over decisions 1 to 352 on these seeds, so the mark asks for 3.5% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_91",
-   "description": "Stage to day 91 (decisions 1 to 364): every evaluation episode is still within the limits after decision 364 (it ran at least 364 decisions and its first_out is None or above 364), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 364 is at least 2853. The batch check check_day_91 in the checks file tests it. The best program of an earlier run of this loop averaged 2753 over decisions 1 to 364 on these seeds, so the mark asks for 3.6% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_94",
-   "description": "Stage to day 94 (decisions 1 to 376): every evaluation episode is still within the limits after decision 376 (it ran at least 376 decisions and its first_out is None or above 376), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 376 is at least 2859. The batch check check_day_94 in the checks file tests it. The best program of an earlier run of this loop averaged 2756 over decisions 1 to 376 on these seeds, so the mark asks for 3.8% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_97",
-   "description": "Stage to day 97 (decisions 1 to 388): every evaluation episode is still within the limits after decision 388 (it ran at least 388 decisions and its first_out is None or above 388), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 388 is at least 2864. The batch check check_day_97 in the checks file tests it. The best program of an earlier run of this loop averaged 2757 over decisions 1 to 388 on these seeds, so the mark asks for 3.9% more.",
-   "subgoals": []
-  },
-  {
-   "name": "day_100",
-   "description": "Stage to day 100 (decisions 1 to 400): every evaluation episode is still within the limits after decision 400 (it ran at least 400 decisions and its first_out is None or above 400), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 400 is at least 2869. The batch check check_day_100 in the checks file tests it. The best program of an earlier run of this loop averaged 2758 over decisions 1 to 400 on these seeds, so the mark asks for 4.0% more.",
+   "description": "Stage to day 40 (decisions 1 to 160): every evaluation episode is still within the limits after decision 160 (it ran at least 160 decisions and its first_out is None or above 160), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 160 is at least 2793. The batch check check_day_40 in the checks file tests it. The best program of an earlier run of this loop averaged 2685 over decisions 1 to 160 on these seeds, so the mark asks for 4.0% more.",
    "subgoals": []
   },
   {
    "name": "plus_6",
-   "description": "The whole episode, beyond the stages: every evaluation episode is still within the limits after decision 400 (it ran at least 400 decisions and its first_out is None or above 400), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 400 is at least 2924. The batch check check_plus_6 in the checks file tests it. The best program of an earlier run of this loop averaged 2758 over decisions 1 to 400 on these seeds, so the mark asks for 6% more.",
+   "description": "The whole episode, beyond the stages: every evaluation episode is still within the limits after decision 160 (it ran at least 160 decisions and its first_out is None or above 160), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 160 is at least 2847. The batch check check_plus_6 in the checks file tests it. The best program of an earlier run of this loop averaged 2685 over decisions 1 to 160 on these seeds, so the mark asks for 6% more.",
    "subgoals": []
   },
   {
    "name": "plus_8",
-   "description": "The whole episode, beyond the stages: every evaluation episode is still within the limits after decision 400 (it ran at least 400 decisions and its first_out is None or above 400), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 400 is at least 2979. The batch check check_plus_8 in the checks file tests it. The best program of an earlier run of this loop averaged 2758 over decisions 1 to 400 on these seeds, so the mark asks for 8% more.",
+   "description": "The whole episode, beyond the stages: every evaluation episode is still within the limits after decision 160 (it ran at least 160 decisions and its first_out is None or above 160), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 160 is at least 2900. The batch check check_plus_8 in the checks file tests it. The best program of an earlier run of this loop averaged 2685 over decisions 1 to 160 on these seeds, so the mark asks for 8% more.",
    "subgoals": []
   },
   {
    "name": "plus_10",
-   "description": "The whole episode, beyond the stages: every evaluation episode is still within the limits after decision 400 (it ran at least 400 decisions and its first_out is None or above 400), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 400 is at least 3034. The batch check check_plus_10 in the checks file tests it. The best program of an earlier run of this loop averaged 2758 over decisions 1 to 400 on these seeds, so the mark asks for 10% more.",
+   "description": "The whole episode, beyond the stages: every evaluation episode is still within the limits after decision 160 (it ran at least 160 decisions and its first_out is None or above 160), and the mean over the evaluation episodes of each episode's mean step reward (true methane, m3/d) over decisions 1 to 160 is at least 2954. The batch check check_plus_10 in the checks file tests it. The best program of an earlier run of this loop averaged 2685 over decisions 1 to 160 on these seeds, so the mark asks for 10% more.",
    "subgoals": []
   }
  ],
@@ -303,7 +205,7 @@
   "dollars": 50,
   "attempts": 300,
   "episodes": 60,
-  "max_steps": 400
+  "max_steps": 160
  },
  "roles": {
   "coordinator": {

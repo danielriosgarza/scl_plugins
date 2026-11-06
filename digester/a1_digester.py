@@ -13,8 +13,11 @@ without copying or changing it. The wrapper adapts only the interface:
   would run on and score the episode 0; the score is 0 here too, and the total reward is the
   methane made until the game was over, so it shows how far the program got. So an episode
   that terminates either left the limits or soured (A1's own termination), and one that is
-  truncated either ran all 400 decisions or met a solver failure; the number of steps tells
-  which. A breach at decision 400 ends the episode as terminated, not truncated.
+  truncated either ran all its decisions or met a solver failure; the number of steps tells
+  which. A breach at the last decision ends the episode as terminated, not truncated.
+- length: an episode has 400 decisions (100 days), as in A1, unless the setup's kwargs give
+  decisions, a smaller number; then the episode is truncated after that decision and its record
+  covers only those decisions. The influent schedule and the dynamics are A1's either way.
 """
 
 from __future__ import annotations
@@ -75,13 +78,21 @@ def _outside(row) -> bool:
 
 
 class A1Digester(Environment):
-    """A1's digester: one decision every 6 hours, 400 decisions, feed of the controlled pump in m3/d."""
+    """A1's digester: one decision every 6 hours, feed of the controlled pump in m3/d.
+
+    An episode has decisions decisions, 400 (A1's 100 days) unless a smaller number is given.
+    """
 
     action_space = Box([FEED_MIN], [FEED_MAX])
     observation_keys = list(OBSERVATION_KEYS)
 
-    def __init__(self):
+    def __init__(self, decisions: int = DECISIONS):
         super().__init__()
+        if isinstance(decisions, bool) or not isinstance(decisions, int):
+            raise ValueError(f"decisions must be a whole number, got {decisions!r}")
+        if not 1 <= decisions <= DECISIONS:
+            raise ValueError(f"decisions must be from 1 to {DECISIONS}, got {decisions}")
+        self._decisions = decisions
         payload = documents.experiment_payload(STUDY)  # the aligned experiment
         self._slots = Slots.from_experiment(payload)
         self._env = GymEnv(payload, documents.load_model_document(STUDY), backend="reference")
@@ -123,7 +134,7 @@ class A1Digester(Environment):
         if _outside(row):
             terminated = True  # game over
 
-        if not terminated and self._decision >= DECISIONS:
+        if not terminated and self._decision >= self._decisions:
             truncated = True
         ended = terminated or truncated
         record = self._record() if ended else None
