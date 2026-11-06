@@ -1,4 +1,4 @@
-"""Replay a digester program on a list of seeds and write per-seed scores and, optionally, trajectories.
+"""Replay a digester program on seeds; write per-seed scores and, optionally, trajectories.
 
 Usage (from the digester folder's environment, so that soft_control_loop and microbesGYM import):
 
@@ -35,10 +35,11 @@ from pathlib import Path
 
 DIGESTER = Path(__file__).resolve().parent.parent
 VFA = ("vfa_s_va", "vfa_s_bu", "vfa_s_pro", "vfa_s_ac")
-SCORE_COLUMNS = ["program", "run", "attempt", "coder_model", "seed", "seed_set", "decisions", "score",
-                 "mean_ch4_flow", "first_out", "max_total_vfa", "min_ph"]
-TRAJECTORY_COLUMNS = ["seed", "decision", "day", "feed_command", "ch4_flow_true", "total_vfa_true",
-                      "ph_true", "ch4_flow_observed", "vfa_assay_sum_observed", "assay_age"]
+SCORE_COLUMNS = ["program", "run", "attempt", "coder_model", "seed", "seed_set", "decisions",
+                 "score", "mean_ch4_flow", "first_out", "max_total_vfa", "min_ph"]
+TRAJECTORY_COLUMNS = ["seed", "decision", "day", "feed_command", "ch4_flow_true",
+                      "total_vfa_true", "ph_true", "ch4_flow_observed", "vfa_assay_sum_observed",
+                      "assay_age"]
 
 
 def seed_set(seed):
@@ -89,6 +90,8 @@ def play(program_dir, seed, decisions):
 
 
 def seeds_of(spans):
+    """Return the seeds named by spans, each a single seed such as 7001 or a range such as
+    7001-7050."""
     seeds = []
     for span in spans:
         first, _, last = span.partition("-")
@@ -97,10 +100,13 @@ def seeds_of(spans):
 
 
 def blank(value):
+    """Return value, or an empty string for None, for a CSV cell."""
     return "" if value is None else value
 
 
 def main():
+    """Parse the arguments, replay the seeds in worker processes, and write and summarize the
+    results."""
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("program_dir", type=Path)
     parser.add_argument("--seeds", nargs="+", required=True, help="seeds or ranges, e.g. 7001-7050")
@@ -108,7 +114,8 @@ def main():
     parser.add_argument("--workers", type=int, default=min(6, os.cpu_count() or 1))
     parser.add_argument("--scores", type=Path)
     parser.add_argument("--trajectories", type=Path)
-    parser.add_argument("--program", default=None, help="name for the program column (default: folder name)")
+    parser.add_argument("--program", default=None,
+                        help="name for the program column (default: the folder's name)")
     parser.add_argument("--run", default="")
     parser.add_argument("--attempt", default="")
     parser.add_argument("--coder", default="")
@@ -117,7 +124,8 @@ def main():
     name = args.program or program_dir.name
     seeds = seeds_of(args.seeds)
     with ProcessPoolExecutor(max_workers=args.workers) as pool:
-        results = list(pool.map(play, [program_dir] * len(seeds), seeds, [args.decisions] * len(seeds)))
+        results = list(pool.map(play, [program_dir] * len(seeds), seeds,
+                                [args.decisions] * len(seeds)))
     scores = [r for r, _ in results]
     for r in scores:
         r.update(program=name, run=args.run, attempt=args.attempt, coder_model=args.coder)
@@ -136,15 +144,17 @@ def main():
                 writer.writerows(trajectory)
     outs = [r for r in scores if r["first_out"] is not None]
     failures = [r for r in scores if r["failure"]]
-    print(f"{name}: {len(scores)} episodes, mean score {statistics.mean(float(r['score'] or 0) for r in scores):.1f}, "
-          f"game overs {len(outs)} {[(r['seed'], r['first_out']) for r in outs]}, failures {len(failures)}")
+    mean = statistics.mean(float(r["score"] or 0) for r in scores)
+    print(f"{name}: {len(scores)} episodes, mean score {mean:.1f}, game overs {len(outs)} "
+          f"{[(r['seed'], r['first_out']) for r in outs]}, failures {len(failures)}")
     for _, trajectory in results:
         seed = trajectory[0]["seed"] if trajectory else None
         r = next(x for x in scores if x["seed"] == seed) if seed is not None else None
         if r and r["first_out"] is None and r["mean_ch4_flow"] is not None:
             mean = statistics.mean(t["ch4_flow_true"] for t in trajectory)
             if abs(mean - r["mean_ch4_flow"]) > 1e-6:
-                print(f"WARNING seed {seed}: trajectory mean {mean} differs from mean_ch4_flow {r['mean_ch4_flow']}")
+                print(f"WARNING seed {seed}: trajectory mean {mean} differs from mean_ch4_flow "
+                      f"{r['mean_ch4_flow']}")
 
 
 if __name__ == "__main__":
