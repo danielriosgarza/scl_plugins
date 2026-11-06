@@ -7,7 +7,14 @@ without copying or changing it. The wrapper adapts only the interface:
 - observation: a dict of decoded noisy readings (no true state, no influent composition);
 - reward: the true methane outflow after each step, read as A1's own evaluation reads it;
 - episode record (mean_ch4_flow, min_ph, max_total_vfa, first_out, score): None at every step,
-  filled in only in the observation that ends the episode.
+  filled in only in the observation that ends the episode;
+- game over: the episode terminates at the first decision whose true state is outside the
+  operating limits (pH below 6.5 or total VFA above 1.0 kgCOD/m3), as a death ends a game. A1
+  would run on and score the episode 0; the score is 0 here too, and the total reward is the
+  methane made until the game was over, so it shows how far the program got. So an episode
+  that terminates either left the limits or soured (A1's own termination), and one that is
+  truncated either ran all 400 decisions or met a solver failure; the number of steps tells
+  which. A breach at decision 400 ends the episode as terminated, not truncated.
 """
 
 from __future__ import annotations
@@ -62,6 +69,11 @@ def _feed(action) -> float:
     return min(max(feed, FEED_MIN), FEED_MAX)
 
 
+def _outside(row) -> bool:
+    """True if the true state in A1's decision row is outside the operating limits."""
+    return float(row["pH"]) < PH_MIN or float(row["total_vfa_kgCOD_m3"]) > VFA_MAX
+
+
 class A1Digester(Environment):
     """A1's digester: one decision every 6 hours, 400 decisions, feed of the controlled pump in m3/d."""
 
@@ -108,6 +120,8 @@ class A1Digester(Environment):
         )
         self._rows.append(row)
         reward = float(row["ch4_flow_m3_d"])
+        if _outside(row):
+            terminated = True  # game over
 
         if not terminated and self._decision >= DECISIONS:
             truncated = True
@@ -142,7 +156,7 @@ class A1Digester(Environment):
         objective = episode_objective(STUDY, self._rows)
         first_out = None
         for number, row in enumerate(self._rows, start=1):
-            if float(row["pH"]) < PH_MIN or float(row["total_vfa_kgCOD_m3"]) > VFA_MAX:
+            if _outside(row):
                 first_out = number
                 break
         return {
