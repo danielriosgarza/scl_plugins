@@ -80,7 +80,7 @@ def _outside(row) -> bool:
 class A1Digester(Environment):
     """A1's digester: one decision every 6 hours, feed of the controlled pump in m3/d.
 
-    An episode has decisions decisions, 400 (A1's 100 days) unless a smaller number is given.
+    An episode has 400 decisions (A1's 100 days), or fewer when decisions gives a smaller number.
     """
 
     action_space = Box([FEED_MIN], [FEED_MAX])
