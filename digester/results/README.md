@@ -156,6 +156,6 @@ python results/replay.py results/programs/run9_043 --seeds 7001-7050 5061-5110 -
 - `--decisions 160` plays 40-day episodes, as the loop's run 9 does.
 - A trajectory file whose name ends in `.gz` is compressed.
 - The script prints the mean score and the game overs.
-- Replaying the exported folders reproduces the scores in `scores.csv`. Run 9's rows on
-  5061-5110, and those of its other programs on 7001-7050, come from the held-out checks, which
-  kept the score to 0.1 and the maximum VFA to 0.001.
+- Replaying the exported folders reproduces the scores in `scores.csv`. Run 9's rows come from
+  the held-out checks, which kept the score to 0.1 and the maximum VFA to 0.001, except those of
+  run9_043 and run9_035 on 7001-7050, which come from full replays.
