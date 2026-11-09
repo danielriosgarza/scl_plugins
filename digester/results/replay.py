@@ -52,6 +52,8 @@ def seed_set(seed):
         return "heldout_5061_5110"
     if 7001 <= seed <= 7050:
         return "a1_7001_7050"
+    if 5111 <= seed <= 5250:
+        return "new_5111_5250"
     return "other"
 
 
