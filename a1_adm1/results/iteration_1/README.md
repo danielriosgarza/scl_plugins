@@ -135,9 +135,10 @@ near 55.
 
 ## Test
 
-Not run yet. The selected program is played on the test seeds 7001 to 7050 with `bridge.py`,
-after the benchmark's PI controller has given the benchmark's own number on the same computer.
-The result goes here.
+Not run. On 2026-11-24 the maintainer decided to stop here for now, so no test seed was played
+for this iteration. When a program is tested, it is played on the seeds 7001 to 7050 with
+`bridge.py`, after the benchmark's PI controller has given the benchmark's own number on the
+same computer.
 
 ## What the run suggests for the next iteration
 

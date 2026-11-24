@@ -86,4 +86,4 @@ on what was changed for the next iteration and why.
 
 | Iteration | Run | Selected program | Selection seeds: mean score, failed | Test seeds: mean score, failed | Dollars at list prices |
 |---|---|---|---|---|---:|
-| [1](iteration_1/README.md) | Run 1, 2026-11-24, 3 rounds, 15 attempts | Attempt 2, gpt-6.2-astra | 10277.3, 0 of 100 | Not run yet | 43.52 |
+| [1](iteration_1/README.md) | Run 1, 2026-11-24, 3 rounds, 15 attempts | Attempt 2, gpt-6.2-astra | 10277.3, 0 of 100 | Not run, by the maintainer's decision | 43.52 |
