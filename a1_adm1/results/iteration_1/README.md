@@ -86,6 +86,12 @@ Read against the three rules of the setup, by the reviewer of the run and again 
 - **Observation only.** It imports the skill and nothing else, reads no file, and draws no
   random number.
 
+`evaluation_replay.json` is the program of `program/` played again on the 60 evaluation seeds,
+through `bridge.py` and the benchmark's own runner, on another computer than the run's. Its mean
+is 10046.0182, which differs from the run's evaluation mean by 2 x 10^-8 m3/d, with no failed
+episode and the same lowest pH. So the copy in `program/` is the program of the run, and the
+bridge scores a program as the loop does.
+
 ## Effort
 
 | Kind | Episodes | Seconds of the run |
