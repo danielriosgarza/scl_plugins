@@ -109,16 +109,26 @@ planned the first milestone, `hold` (a mean of 9277 with no failed episode), in 
 tried five strategies for `start_up`. Each program played the 80 evaluation episodes of the
 seeds 6021 to 6100, and no program failed one.
 
-| Attempt | Coding agent | Strategy | Mean with the declared values | Mean kept | What the search did |
-|---|---|---|---|---|---|
-| 1 | gemini-4-neon | `feed_follows_methane` | 10 432 | 10 930.0 | Tuned values kept |
-| 2 | gpt-6.2-astra | `ph_stat_feed` | 9 600 | 9 835.1 | Tuned values kept |
-| 3 | gemini-4-carbon | `gas_share_pacer` | 10 117.6 | 10 638.4 | Tuned values kept |
-| 4 | claude haiku | `acid_setpoint_ramp` | 10 600.6 | 10 600.6 | Tuned values scored 11 261.9 and the halfway values 10 908.6, each with 1 failed episode of 80, so the declared values were kept |
-| 5 | gemini-4-hydrogen | `retain_then_dilute` | | | Still playing when this was written |
+| Attempt | Coding agent | Strategy | Mean with the declared values | Mean kept | What the search did | Selection seeds |
+|---|---|---|---|---|---|---|
+| 1 | gemini-4-neon | `feed_follows_methane` | 10 432 | 10 930.0 | Tuned values kept | 11 017.7 |
+| 2 | gpt-6.2-astra | `ph_stat_feed` | 9 600 | 9 835.1 | Tuned values kept | Not replayed |
+| 3 | gemini-4-carbon | `gas_share_pacer` | 10 118 | 10 638.4 | Tuned values kept | 10 753.5 |
+| 4 | claude haiku | `acid_setpoint_ramp` | 10 600.6 | 10 600.6 | Tuned values scored 11 262 and the halfway values 10 909, each with 1 failed episode of 80, so the declared values were kept | 10 682.6 |
+| 5 | gemini-4-hydrogen | `retain_then_dilute` | 10 450 | 11 253.4 | Tuned values kept | 11 375.3 |
 
-An attempt took 58 to 64 minutes, 42 to 45 of them the search. The run had cost 6.08 dollars
-when attempt 5 started. The maintainer had the run stopped at the end of round 1.
+No program failed an episode of the 100 selection seeds either. Attempt 5 was the best of the
+round and met the milestones `hold`, `reach_10000` and `reach_11000`. Attempts 3 and 5 met the
+subgoal `start_up`. The search moved the ceiling of attempt 5 for the concentrate from 115 to
+124 m3/d, inside its range, and every episode of the program ends with the pumps at 276 and 124.
+The coordinator wrote after the round that "the score is limited by the ceiling". The skill
+agent admitted one skill, `read_total_acids`. No answer of an agent was refused.
+
+The round took 5 hours and 15 minutes and cost 7.16 dollars, after 2.12 dollars for the plan:
+9.28 dollars in all, of which 4.43 were the coordinator's three answers. The computer played
+4320 tuning episodes in 3.6 hours, 880 evaluation episodes in 45 minutes and 400 selection
+episodes in 19 minutes. The maintainer had the run stopped at the end of round 1, before round 2
+asked any agent. The folder of the run and a copy of its checkpoint are kept.
 
 The agents read the true values of training episodes, as the maintainer allowed (above). No
 program received one.
