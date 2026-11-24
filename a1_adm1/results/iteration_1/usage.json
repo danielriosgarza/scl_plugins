@@ -1,0 +1,51 @@
+{
+ "opus": {
+  "calls": 28,
+  "input_tokens": 1318866,
+  "cached_tokens": 0,
+  "output_tokens": 96945,
+  "dollars": 7.214364
+ },
+ "gemini-4-neon": {
+  "calls": 9,
+  "input_tokens": 974086,
+  "cached_tokens": 0,
+  "output_tokens": 943474,
+  "dollars": 17.074368
+ },
+ "gpt-6.2-astra": {
+  "calls": 7,
+  "input_tokens": 792758,
+  "cached_tokens": 82176,
+  "output_tokens": 9395,
+  "dollars": 6.0933264
+ },
+ "gemini-4-carbon": {
+  "calls": 5,
+  "input_tokens": 595465,
+  "cached_tokens": 0,
+  "output_tokens": 715260,
+  "dollars": 8.34353
+ },
+ "haiku": {
+  "calls": 5,
+  "input_tokens": 579993,
+  "cached_tokens": 0,
+  "output_tokens": 82086,
+  "dollars": 0.0990423
+ },
+ "gemini-4-hydrogen": {
+  "calls": 5,
+  "input_tokens": 533340,
+  "cached_tokens": 0,
+  "output_tokens": 390734,
+  "dollars": 3.730515
+ },
+ "sonnet": {
+  "calls": 15,
+  "input_tokens": 420769,
+  "cached_tokens": 0,
+  "output_tokens": 12799,
+  "dollars": 0.969528
+ }
+}

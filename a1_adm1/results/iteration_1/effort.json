@@ -1,0 +1,22 @@
+{
+ "baseline": {
+  "episodes": 60,
+  "seconds": 158.7
+ },
+ "debug": {
+  "episodes": 30,
+  "seconds": 481.8
+ },
+ "evaluation": {
+  "episodes": 900,
+  "seconds": 2360.2
+ },
+ "trial": {
+  "episodes": 120,
+  "seconds": 304.5
+ },
+ "selection": {
+  "episodes": 1200,
+  "seconds": 2862.6
+ }
+}
