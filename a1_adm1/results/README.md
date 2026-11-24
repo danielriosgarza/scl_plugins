@@ -141,8 +141,6 @@ The rise to 300 and 130, which no digester of the 20 baseline seeds failed, lost
 first mark of the fixed milestones in `checks.py`. The further marks are every 1000 m3/d from
 10 000 to 17 000.
 
-The description in `setup.json` gives the agents these findings.
-
 Computer time: on the backend `jax`, with child processes that each play one episode after
 another, 80 episodes took 6 to 6.6 minutes on 4 processor cores, which is 18 to 20 s of one core
 for an episode. The first episode of each child includes about 10 s in which the model is
@@ -221,8 +219,14 @@ decision with the sludge pump at 0, or to a higher first rate than 130, and none
 sludge back faster than by 8 m3/d per decision. The limits of the pumps allow 10 and 34. No
 program has loaded a digester beyond 480 and 172.
 
-The description in `setup.json` gives the agents these findings. The baseline of the setup plays
-`hold_200_100`, `ramp_300_130_3`, `start_110_400_130` and `start_110_480_172`.
+**These findings are not shown to the agents.** The idea of a start without sludge came from
+the record of a controller of the benchmark, and the maintainer decided on 2026-11-24 that an
+agent is to understand the challenge, its tools and what it may tune, and is shown no solution.
+The same holds for the findings of the section before this one, which were the setup's own and
+partly misleading. The description in `setup.json` is now the task's own document in short, and
+the baseline of the setup plays the three pairs of fixed rates of that document: `hold_85_0`,
+`hold_200_100` and `hold_200_110`. This section and the one before it stay as a record of what
+the environment does.
 
 ## The plugin against the benchmark's own PI controller (2026-11-24)
 
