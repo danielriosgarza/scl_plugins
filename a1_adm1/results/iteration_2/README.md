@@ -83,6 +83,17 @@ So the description holds nothing that came from a controller of the benchmark, a
 plugin's own findings, which had steered the programs of the agents and were partly wrong. What
 the experiments showed stays in `../README.md` as a record.
 
+**The true state of training episodes (the maintainer, 2026-11-24).** "During training it is ok
+to see the true state as long as when officially executing the task the state is hidden." Until
+then the agents read only what a program reads, late and with errors, and the score. Now the
+summaries and tables of training episodes also show the true pH, the true acids, the true methane
+outflow, the nitrogen, four groups of microorganisms, the feed that no controller sets, and the
+sludge of the episode (`../../README.md`, "What the agents read that no program gets"). The
+setup names them as `hidden`, an option of soft_control_loop 0.5.0: they are recorded in every
+trace and given to no program. The benchmark allows the same to a training
+(README of `mgym-bench`, "Rules for a fair comparison"), and asks that the result be stated
+together with this fact.
+
 ## What a tuning costs in computer time
 
 A program with constants plays at most 9 x 6 x 16 = 864 tuning episodes, then 80 evaluation

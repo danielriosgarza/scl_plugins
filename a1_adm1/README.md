@@ -23,11 +23,31 @@ and the benchmark's own code scores it.
 | Its own pumps | `sludge_rate`, `carbohydrate_rate`: where each pump stands after the limit on its change |
 | Not given | The day, the number of decisions, the length of an episode, the seed, every true value |
 
-The ids and units are the task's. The agents that write the programs read the same late and sparse
-readings, summarized over the phases of an episode, and after each training episode the task's
-score and metrics: `net_methane` (the score), its four phase values, `collapsed`, `failed`, the
-lowest pH, the highest acids, and the pH and acids at the end. They read no true value of a
-decision.
+The ids and units are the task's.
+
+## What the agents read that no program gets
+
+Every episode of the loop is a training episode. The benchmark lets a training read the true
+state of the simulation and the values that are drawn for an episode, as long as the controller
+reads only its sensors (README of `mgym-bench`, "Rules for a fair comparison"), and the maintainer
+allowed the same for the agents of this loop on 2026-11-24. So the agents read, in the summaries
+and the tables of training episodes, beside the readings that the program had and the task's
+score and metrics:
+
+| Key | What it is |
+|---|---|
+| `true_ph` | The true pH of the liquid, without the error of the probe |
+| `true_acids` | The true total of the four acids, kgCOD/m3, without the delay and the error of the laboratory |
+| `true_ch4_flow` | The true methane outflow at atmospheric pressure, m3/d |
+| `true_nitrogen` | The inorganic nitrogen in the liquid, mM |
+| `true_x_su`, `true_x_pro`, `true_x_ac`, `true_x_h2` | The microorganisms that take up the sugars and propionate, and the methanogens that use acetate and hydrogen, kgCOD/m3 |
+| `true_incoming_sludge` | The rate of the feed that no controller sets, m3/d |
+| `sludge_carbohydrates`, `sludge_proteins`, `sludge_lipids` | The sludge of the episode as multiples of the nominal recipe, once per episode |
+
+The setup names these keys as `hidden`: the loop records them in every trace and gives them to
+no program, and a program that reads one fails at its first decision. `bridge.py`, which plays
+the test and the validation seeds, has no true value at all. A result of the loop is to be
+stated together with this fact, as the benchmark asks of a training that reads true values.
 
 ## How the loop is set up for this task
 
