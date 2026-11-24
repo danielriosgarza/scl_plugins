@@ -1,0 +1,389 @@
+{
+ "goal": "Feed an anaerobic digester with two pumps so that its net methane over the first 100 days is as high as possible and no episode fails. The score of an episode is net_methane (m3/d): the mean true methane outflow minus 0.395 times the mean true outflow of organic acids over decisions 1 to 400. An episode fails when the digester collapses (true pH below 6.0 at the end of any of its 568 decisions, the run-out included) or does not run to its end. A program with no failed episode ranks above every program with one, whatever their scores. The goal is the highest mean score over the evaluation episodes with no failed episode.",
+ "description": "The task loading of microbesGYM's environment a1_adm1, wrapped unchanged: the benchmark's own episode gives the readings and computes the score. The numbers below are from the task's description (TASK.md) and from the nominal model of the task.\n\nTHE DIGESTER. A closed, stirred tank with 3400 m3 of liquid and 300 m3 of gas at 35 C, modelled with ADM1 (the version of the Benchmark Simulation Model no. 2). Microorganisms turn the feed into methane in stages. Solid carbohydrates, proteins and lipids are hydrolysed (10 per day), sugars, amino acids and fatty acids are taken up fast and become the organic acids valerate, butyrate, propionate and acetate, and two groups of methanogens make methane from acetate and from hydrogen. The methanogens that use acetate are the slow step: they grow at most 0.4 per day, they are inhibited by free ammonia, and they work at half their rate at pH 6.5 and at about 3 % of it at pH 6.0. Too much feed therefore makes acids faster than they are used, the pH falls, the methanogens slow down and the acids rise further. The digester then collapses: the pH settles near 4, the methane stops and the acids leave with the liquid. Every group needs inorganic nitrogen to grow. The liquid that leaves always equals the feeds together, so the volume stays constant and all liquid that enters also washes microorganisms out.\n\nACTION: a list of two floats, [sludge_rate, carbohydrate_rate], the rates that the program asks for, in m3/d. sludge_rate is from 0 to 1000 and changes by at most 34 per decision; it starts at 85. carbohydrate_rate is from 0 to 300 and changes by at most 10 per decision; it starts at 0. An action outside these limits is rejected and ends the episode as a failure of the program. A change larger than the limit is cut to it, so each pump needs 30 decisions to cross its range. One decision every 6 hours.\n\nTHE THREE FEEDS. (1) The sludge pump delivers sludge: per m3 5 kgCOD carbohydrates, 20 proteins, 5 lipids, 2 mixed organic matter, 25 inert solids, and inorganic carbon, inorganic nitrogen and dissolved salts, which buffer the pH. (2) The carbohydrate pump delivers a concentrate of 200 kgCOD of solid carbohydrates per m3 in water, about six times the degradable matter of sludge, with no nitrogen and no buffer. It is what makes much methane, and too much of it makes the digester collapse. Too much sludge collapses it too, by washing the microorganisms out. (3) A third feed of sludge that no program sets follows a schedule that is the same in every episode: 63 to 148 m3/d, mean 84, changing every 6 hours. On two days of every week it is more dilute (0.9 times the concentrations), and once in an episode, on days 50 and 51, a storm brings 116 to 148 m3/d at 0.65 times the concentrations. A program is not told the schedule and has no clock.\n\nWHAT DIFFERS BETWEEN EPISODES. The seed draws the carbohydrates, proteins and lipids of each of the three sludge recipes, each between 0.7 and 1.4 times nominal and constant within the episode, and the errors of the sensors. How much feed a digester bears depends on its sludge, which is never observed.\n\nOBSERVABLES. Every reading has a random error with the standard deviation given; no sensor has an offset. At every decision, without delay: ch4_flow and co2_flow (gas meters, m3/d, 2 % of the value), ch4_pressure (partial pressure of methane, bar, 0.01 bar), ph (probe, 0.1 pH, so a single reading says little and readings must be combined). Laboratory values, sampled at every 4th decision and arriving 4 decisions later, all five together: vfa_s_va, vfa_s_bu, vfa_s_pro, vfa_s_ac (valerate, butyrate, propionate, acetate, kgCOD per litre, 5 %; multiply by 1000 for kgCOD/m3) and inorganic_carbon (mM, 5 %). They are None during the first day, and afterwards the newest value is 4 to 7 decisions old. lab_age is that age in decisions, None before the first arrives; it is 4 at the decision at which new values arrive. sludge_rate and carbohydrate_rate are the rates at which the pumps stand now, after the limit on their change. The gas meters report a volume at the pressure of the gas above the liquid, which rises with the production (5.5 % above atmospheric at the start, 29 % with the pumps at 200 and 100), so the methane of the score, counted at atmospheric pressure, is higher than ch4_flow by that ratio. Not observed: the day, the number of decisions, the seed, the microorganisms, the nitrogen, the sludge of the episode and every true value.\n\nEPISODE. 568 decisions (142 days). Every episode starts from the same steady state, about 1800 m3/d of methane. Decisions 1 to 400 (100 days) are scored. Decisions 401 to 568 are the run-out: the program keeps running exactly as before, nothing there adds to the score, but a collapse there fails the episode. Nothing ends an episode early; a collapsed digester stays in it and its negative net methane is counted.\n\nSCORE AND EPISODE RECORD. These keys are None at every step and are filled in only in the observation that ends the episode, which no program acts on. They are computed from the true state. net_methane = the score, m3/d: mean methane outflow minus 0.395 times the mean outflow of the four acids (kgCOD/d) over decisions 1 to 400. net_methane_start, net_methane_middle, net_methane_end = the same over decisions 1 to 80, 81 to 240 and 241 to 400, so the score is 0.2 x start + 0.4 x middle + 0.4 x end. net_methane_run_out = the same over decisions 401 to 568, not in the score; a program that holds what it reached shows a run-out equal to its end phase. collapsed = 1 if the true pH was below 6.0 at the end of any decision, else 0. failed = True if the digester collapsed or the episode did not run all 568 decisions. mean_ch4_flow and mean_acids_out = the two parts of the score. min_ph and max_total_vfa (kgCOD/m3) = extremes over all 568 decisions. end_ph and end_total_vfa = the state after the last decision. REWARD of a step: the true net methane of that decision, m3/d, at every decision including the run-out; a program never sees it.\n\nWHAT FIXED RATES SHOW (means of 20 training episodes, seeds 6001 to 6020). Pumps left at 85 and 0: net methane 1760, no collapse, lowest pH 7.35. 200 and 100: 9330, no collapse, lowest pH 6.67. 200 and 110: 3890, with 7 of 20 collapsed, lowest pH 4.10; the 13 others made 9700. A good pair of rates and a collapse lie close together, and which side an episode falls on depends on its sludge. The start is the dangerous part: with 200 and 100 the acids peak at 4.2 kgCOD/m3 on day 4, the methane reaches 10 600 m3/d on day 7 and settles at 9500 from day 10, and the acids are below 0.5 on day 10. All seven collapses came on day 6 or 7. A collapse comes fast and cannot be undone: the pH was still at or above 6.5 three decisions before it was below 6.0, and closing or lowering the pumps once the true pH was below 6.5 or 6.0 brought no digester back. A program has to see the danger before the pH shows it, or keep a distance. Feeding more than a digester bears for good pays inside the scored days and collapses later: a slow steady rise of the concentrate scored up to 9 % more than fixed rates and collapsed on day 118 or 134 on some seeds; the run-out counts such a collapse.\n\nRULES FOR A PROGRAM. The benchmark gives a controller no clock, and a program is a controller. The rules of this setup say what that means, and an attempt that breaks one is barred whatever its score.\n\nSEEDS. Every episode of the loop is a training episode of the benchmark. Results of other controllers on this task are not shown here and are not targets. Set each new milestone above what this loop's own best program reaches, with no failed episode, and keep raising it.",
+ "environment": "a1_adm1:Loading",
+ "kwargs": {},
+ "observables": [
+  "ch4_flow",
+  "co2_flow",
+  "ch4_pressure",
+  "vfa_s_va",
+  "vfa_s_bu",
+  "vfa_s_pro",
+  "vfa_s_ac",
+  "inorganic_carbon",
+  "ph",
+  "lab_age",
+  "sludge_rate",
+  "carbohydrate_rate",
+  "net_methane",
+  "net_methane_start",
+  "net_methane_middle",
+  "net_methane_end",
+  "net_methane_run_out",
+  "collapsed",
+  "mean_ch4_flow",
+  "mean_acids_out",
+  "min_ph",
+  "max_total_vfa",
+  "end_ph",
+  "end_total_vfa",
+  "failed"
+ ],
+ "step_deadline": null,
+ "timeout": 900,
+ "baseline": {
+  "conditions": {
+   "hold_85_0": "programs/hold_85_0",
+   "hold_200_100": "programs/hold_200_100",
+   "hold_200_110": "programs/hold_200_110"
+  },
+  "seeds": [
+   6001,
+   6002,
+   6003,
+   6004,
+   6005,
+   6006,
+   6007,
+   6008,
+   6009,
+   6010,
+   6011,
+   6012,
+   6013,
+   6014,
+   6015,
+   6016,
+   6017,
+   6018,
+   6019,
+   6020
+  ]
+ },
+ "seeds": {
+  "debug": [
+   6001,
+   6002
+  ],
+  "evaluation": [
+   6021,
+   6022,
+   6023,
+   6024,
+   6025,
+   6026,
+   6027,
+   6028,
+   6029,
+   6030,
+   6031,
+   6032,
+   6033,
+   6034,
+   6035,
+   6036,
+   6037,
+   6038,
+   6039,
+   6040,
+   6041,
+   6042,
+   6043,
+   6044,
+   6045,
+   6046,
+   6047,
+   6048,
+   6049,
+   6050,
+   6051,
+   6052,
+   6053,
+   6054,
+   6055,
+   6056,
+   6057,
+   6058,
+   6059,
+   6060,
+   6061,
+   6062,
+   6063,
+   6064,
+   6065,
+   6066,
+   6067,
+   6068,
+   6069,
+   6070,
+   6071,
+   6072,
+   6073,
+   6074,
+   6075,
+   6076,
+   6077,
+   6078,
+   6079,
+   6080
+  ]
+ },
+ "selection": {
+  "seeds": [
+   6081,
+   6082,
+   6083,
+   6084,
+   6085,
+   6086,
+   6087,
+   6088,
+   6089,
+   6090,
+   6091,
+   6092,
+   6093,
+   6094,
+   6095,
+   6096,
+   6097,
+   6098,
+   6099,
+   6100,
+   30001,
+   30002,
+   30003,
+   30004,
+   30005,
+   30006,
+   30007,
+   30008,
+   30009,
+   30010,
+   30011,
+   30012,
+   30013,
+   30014,
+   30015,
+   30016,
+   30017,
+   30018,
+   30019,
+   30020,
+   30021,
+   30022,
+   30023,
+   30024,
+   30025,
+   30026,
+   30027,
+   30028,
+   30029,
+   30030,
+   30031,
+   30032,
+   30033,
+   30034,
+   30035,
+   30036,
+   30037,
+   30038,
+   30039,
+   30040,
+   30041,
+   30042,
+   30043,
+   30044,
+   30045,
+   30046,
+   30047,
+   30048,
+   30049,
+   30050,
+   30051,
+   30052,
+   30053,
+   30054,
+   30055,
+   30056,
+   30057,
+   30058,
+   30059,
+   30060,
+   30061,
+   30062,
+   30063,
+   30064,
+   30065,
+   30066,
+   30067,
+   30068,
+   30069,
+   30070,
+   30071,
+   30072,
+   30073,
+   30074,
+   30075,
+   30076,
+   30077,
+   30078,
+   30079,
+   30080
+  ],
+  "finalists": 4,
+  "timeout": 900
+ },
+ "pass_rate": 1.0,
+ "score": "net_methane",
+ "failure": "failed",
+ "rules": [
+  {
+   "name": "no_clock",
+   "text": "The program keeps no clock of its own. It does not count its calls of act, the decisions, the days or the laboratory results that have arrived, and it does not add up time, in its memory or anywhere else. Nothing that it does may depend on a value that only tells how far the episode has run, because the task gives a controller no clock: with the length of an episode, a count would tell how many scored decisions are left. What a program keeps from one decision to the next is about the digester, for example earlier readings, averages and trends of them or the sum of its control errors, or about what it has done, for example the rates it asked for or a flag that a phase of its own has ended. A list of the last readings with a fixed largest length is allowed. A list or a number that grows with every decision whatever the digester does is a count and breaks the rule."
+  },
+  {
+   "name": "own_memory",
+   "text": "The program keeps everything that it remembers in the memory dict that act receives. It keeps nothing in a variable of a module that it changes, in a default argument, in an attribute of a function, in a file or anywhere else outside that dict, so that no episode can learn from another one. Constants of a module that are never changed are allowed."
+  },
+  {
+   "name": "observation_only",
+   "text": "The observation that act receives is the program's only source about the episode. The program reads no file, no environment variable and no clock of the computer, and it draws no random number, so the same readings always give the same actions. It imports nothing of microbesGYM (mgym_engine, mgym_bench), nothing of the plugin (a1_adm1, bridge) and nothing of soft_control_loop except what a skill of the library needs, and it simulates no model of the digester with a solver."
+  }
+ ],
+ "budgets": {
+  "dollars": 42,
+  "attempts": 50,
+  "episodes": 60,
+  "max_steps": null
+ },
+ "explore": 5,
+ "patience": 3,
+ "prices": {
+  "opus": {
+   "input": 4.0,
+   "output": 20.0,
+   "cached": 0.2
+  },
+  "sonnet": {
+   "input": 2.0,
+   "output": 10.0,
+   "cached": 0.1
+  },
+  "haiku": {
+   "input": 0.1,
+   "output": 0.5,
+   "cached": 0.01
+  },
+  "gpt-6.2-astra": {
+   "input": 8.0,
+   "output": 40.0,
+   "cached": 0.4
+  },
+  "gemini-4-neon": {
+   "input": 3.0,
+   "output": 15.0,
+   "cached": 0.15
+  },
+  "gemini-4-carbon": {
+   "input": 2.0,
+   "output": 10.0
+  },
+  "gemini-4-hydrogen": {
+   "input": 1.5,
+   "output": 7.5,
+   "cached": 0.075
+  }
+ },
+ "roles": {
+  "coordinator": {
+   "backend": "claude",
+   "model": "opus",
+   "effort": "high",
+   "timeout": 600
+  },
+  "coders": [
+   {
+    "backend": "agy",
+    "model": "gemini-4-neon",
+    "effort": "high",
+    "timeout": 1800
+   },
+   {
+    "backend": "codex",
+    "model": "gpt-6.2-astra",
+    "effort": "medium",
+    "timeout": 600
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-carbon",
+    "effort": "high",
+    "timeout": 1800
+   },
+   {
+    "backend": "claude",
+    "model": "haiku",
+    "effort": "medium",
+    "timeout": 600
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-hydrogen",
+    "effort": "high",
+    "timeout": 1800
+   }
+  ],
+  "reviewer": {
+   "backend": "claude",
+   "model": "sonnet",
+   "effort": "high",
+   "timeout": 600
+  },
+  "skill_agent": {
+   "backend": "claude",
+   "model": "opus",
+   "effort": "high",
+   "timeout": 600
+  }
+ },
+ "checks": "checks.py",
+ "milestones": [
+  {
+   "name": "hold",
+   "description": "No evaluation episode failed, and the mean score (net_methane, m3/d) over the evaluation episodes is at least 9217. This is what the best fixed rates of the baseline, 200 and 100 m3/d, scored on the evaluation seeds (9216.9, with no failed episode), so the mark asks for a program that does at least as well. The batch check check_hold in the checks file tests it.",
+   "subgoals": []
+  },
+  {
+   "name": "plus_5",
+   "description": "No evaluation episode failed, and the mean score (net_methane, m3/d) over the evaluation episodes is at least 9678, which is 5 % above the best fixed rates of the baseline on these seeds (9216.9). The batch check check_plus_5 in the checks file tests it.",
+   "subgoals": []
+  },
+  {
+   "name": "plus_10",
+   "description": "No evaluation episode failed, and the mean score (net_methane, m3/d) over the evaluation episodes is at least 10139, which is 10 % above the best fixed rates of the baseline on these seeds (9216.9). The batch check check_plus_10 in the checks file tests it.",
+   "subgoals": []
+  },
+  {
+   "name": "plus_15",
+   "description": "No evaluation episode failed, and the mean score (net_methane, m3/d) over the evaluation episodes is at least 10599, which is 15 % above the best fixed rates of the baseline on these seeds (9216.9). The batch check check_plus_15 in the checks file tests it.",
+   "subgoals": []
+  },
+  {
+   "name": "plus_20",
+   "description": "No evaluation episode failed, and the mean score (net_methane, m3/d) over the evaluation episodes is at least 11060, which is 20 % above the best fixed rates of the baseline on these seeds (9216.9). The batch check check_plus_20 in the checks file tests it.",
+   "subgoals": []
+  },
+  {
+   "name": "plus_25",
+   "description": "No evaluation episode failed, and the mean score (net_methane, m3/d) over the evaluation episodes is at least 11521, which is 25 % above the best fixed rates of the baseline on these seeds (9216.9). The batch check check_plus_25 in the checks file tests it.",
+   "subgoals": []
+  },
+  {
+   "name": "plus_30",
+   "description": "No evaluation episode failed, and the mean score (net_methane, m3/d) over the evaluation episodes is at least 11982, which is 30 % above the best fixed rates of the baseline on these seeds (9216.9). The batch check check_plus_30 in the checks file tests it.",
+   "subgoals": []
+  }
+ ]
+}
