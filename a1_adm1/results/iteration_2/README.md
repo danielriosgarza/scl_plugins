@@ -42,9 +42,61 @@ run 1.
 Nothing here used a test seed or a validation seed. Every episode behind the new description is a
 training episode.
 
+## A second review, before the run (2026-11-24)
+
+The maintainer asked for a critical review of why the loop does not work on this task. It found
+three more causes, and the setup changed again before any agent was asked.
+
+5. **The description told the agents what to do, and partly wrongly.** On top of the task it
+   carried the setup's own conclusions, such as "load slowly", drawn from programs that all
+   raised both pumps together. The programs of the agents followed them. Later experiments
+   showed that this picture was wrong: after a start with the sludge pump at zero, the rates
+   400 and 130 hold in 100 of 100 digesters, where 11 of 20 collapsed when both pumps rose
+   together (`../README.md`, "A start without sludge"). An agent that is told the challenge
+   and not a recipe is free to find this.
+6. **A coding agent never saw an episode of its own program.** Each program of run 1 was one
+   answer. soft_control_loop 0.5.0 can show a coding agent the result of its program and let it
+   write the program again (`revise`). It also cuts the summaries where the setup says
+   (`phases`).
+7. **A coding agent's prompt was about 110 000 tokens**, most of them the summaries of 60
+   baseline episodes that differed little. With 0.5.0 the agents read a table of all baseline
+   episodes of a condition and the summaries of two.
+
+A check of the plugin itself found nothing wrong: the benchmark's PI controller, written as a
+program of the loop, scores what its scorecard says, 14 953.0 on the 100 training seeds
+(`../README.md`, "The plugin against the benchmark's own PI controller").
+
+| | After the first review | Now | Why |
+|---|---|---|---|
+| soft_control_loop | 0.4.0 | 0.5.0 | Causes 6 and 7 |
+| Description | The task, nine rises of both pumps together and the conclusions drawn from them | The task's own document in short: the challenge, the pumps, the sensors, the score and the task's trial episodes with fixed rates; then what a program decides and what it may leave to the search | Cause 5, and the maintainer's decision below |
+| Baseline | `hold_200_100`, `ramp_300_130_3`, `ramp_400_150_3`, `ramp_480_172_1` | `hold_85_0`, `hold_200_100`, `hold_200_110`, the three pairs of the task's document | The same |
+| Phases of a summary | 4 or 8 equal parts | Cut at the decisions 8, 16, 24, 32, 40, 48, 64, 80, 160, 240 and 400 | Cause 6: the start and a collapse take days, and a part of 71 decisions hides both |
+| Constants of a tuning | Up to 8 | Up to 10 | A program with two loops of feedback has about ten numbers |
+| Revise | | Not set: the maintainer decides, since each revision costs one more answer of a coding agent | Cause 6 |
+
+**The maintainer's decision (2026-11-24).** A first form of this setup told the agents what the
+experiments with a start without sludge had shown, and what the designer of the benchmark's PI
+controller had chosen before its search. The maintainer rejected both: an agent needs to
+understand the challenge, what tools it has and what it may tune, and it is shown no solution.
+So the description holds nothing that came from a controller of the benchmark, and none of the
+plugin's own findings, which had steered the programs of the agents and were partly wrong. What
+the experiments showed stays in `../README.md` as a record.
+
+**The true state of training episodes (the maintainer, 2026-11-24).** "During training it is ok
+to see the true state as long as when officially executing the task the state is hidden." Until
+then the agents read only what a program reads, late and with errors, and the score. Now the
+summaries and tables of training episodes also show the true pH, the true acids, the true methane
+outflow, the nitrogen, four groups of microorganisms, the feed that no controller sets, and the
+sludge of the episode (`../../README.md`, "What the agents read that no program gets"). The
+setup names them as `hidden`, an option of soft_control_loop 0.5.0: they are recorded in every
+trace and given to no program. The benchmark allows the same to a training
+(README of `mgym-bench`, "Rules for a fair comparison"), and asks that the result be stated
+together with this fact.
+
 ## What a tuning costs in computer time
 
-A program with 8 constants plays at most 9 x 6 x 16 = 864 tuning episodes, then 80 evaluation
+A program with constants plays at most 9 x 6 x 16 = 864 tuning episodes, then 80 evaluation
 episodes with its declared values and 80 with the tuned ones, and 80 more if the halfway values
 are tried. At about 11 s of one core for an episode, that is up to 3.4 hours of one core for an
 attempt, or about 15 minutes on 14 cores.

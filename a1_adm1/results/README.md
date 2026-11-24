@@ -141,14 +141,110 @@ The rise to 300 and 130, which no digester of the 20 baseline seeds failed, lost
 first mark of the fixed milestones in `checks.py`. The further marks are every 1000 m3/d from
 10 000 to 17 000.
 
-The description in `setup.json` gives the agents these findings. The baseline of the setup plays
-`hold_200_100`, `ramp_300_130_3`, `ramp_400_150_3` and `ramp_480_172_1`.
-
 Computer time: on the backend `jax`, with child processes that each play one episode after
 another, 80 episodes took 6 to 6.6 minutes on 4 processor cores, which is 18 to 20 s of one core
 for an episode. The first episode of each child includes about 10 s in which the model is
 compiled. On the backend `reference` an episode takes about 27 s. Sixteen episodes of
 `hold_200_100` gave the same scores on both backends to within 0.0005 m3/d.
+
+## A start without sludge (2026-11-24, for iteration 2)
+
+All nine programs above raise the sludge pump from the first decision on, and so did every
+program of run 1. A review of the loop before run 2 found that this was the wrong picture of the
+digester. The benchmark's record of its PI controller reports that this controller holds the
+sludge pump at zero during the first days of every training episode, while its concentrate rises
+(`results/a1_adm1/loading/pi/README.md` of microbesGYM, "Feedback or a ramp"). So the idea came
+from that record. The numbers below come from five programs of this plugin that read no sensor,
+on training seeds (`programs/start_F_S_C`, `starts.csv`).
+
+A program `start_F_S_C` lowers the sludge pump to 0, where it is after 3 decisions, and raises the
+concentrate by a fixed step per decision to F m3/d. Then it raises both pumps to S and C m3/d and
+holds them. It keeps no clock: it reads where its pumps stand, and a flag in its memory says that
+the concentrate has reached F. On the baseline seeds 6001 to 6020:
+
+| Program | Concentrate first (m3/d), step | Sludge, concentrate at the end (m3/d) | Mean score | Failed | Mean of the others | Start | Middle | End | Of the others: start | Of the others: middle |
+|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| `start_110_300_130` | 110, 5.5 | 300, 130 | 11597.1 | 0 of 20 |  | 8855 | 12281 | 12284 | | |
+| `start_110_400_130` | 110, 5.5 | 400, 130 | 12288.7 | 0 of 20 |  | 9228 | 13052 | 13056 | | |
+| `start_110_480_150` | 110, 5.5 | 480, 150 | 10104.5 | 5 of 20 | 13974.3 | 9895 | 11432 | 8882 | 10018 | 14960 |
+| `start_130_450_150` | 130, 6.5 | 450, 150 | 10982.2 | 4 of 20 | 13956.2 | 10418 | 12173 | 10074 | 10538 | 14808 |
+| `start_110_480_172` | 110, 5.5 | 480, 172 | 7023.5 | 8 of 20 | 15344.6 | 10075 | 6407 | 6114 | 10548 | 16535 |
+
+On the evaluation seeds 6021 to 6100, `start_110_400_130` scored 12209.4 with no failed episode
+of 80, a lowest pH of 6.69 and scores from 11326 to 13602.
+
+**The start decides, and the sludge pump endangers it.** The rates 400 and 130 collapsed 11 of 20
+digesters when both pumps rose together in 11 days (`ramp_400_130_3`). After a start without
+sludge they held in all 100 digesters played. With the sludge pump at 0 the liquid of the tank is
+replaced by about 190 m3/d in place of 500, so the likely reason is that the microorganisms
+multiply on the concentrate faster than they are washed out. This reason was not tested.
+
+**The readings during such a start**, as means over the 20 digesters under `start_110_400_130`,
+as a program gets them:
+
+| Day | Sludge pump (m3/d) | Carbohydrate pump (m3/d) | Methane flow (m3/d) | pH | Acids (kgCOD/m3) | Inorganic carbon (mM) |
+|---:|---:|---:|---:|---:|---:|---:|
+| 2 | 0 | 30 | 2538 | 7.31 | 0.24 | 155 |
+| 3 | 0 | 52 | 3540 | 7.24 | 0.27 | 155 |
+| 5 | 0 | 96 | 5527 | 7.10 | 0.78 | 143 |
+| 8 | 67 | 113 | 7210 | 7.06 | 1.22 | 116 |
+| 10 | 123 | 116 | 7578 | 7.01 | 0.51 | 110 |
+| 13 | 207 | 120 | 8085 | 6.92 | 0.35 | 96 |
+| 20 | 398 | 130 | 9465 | 6.86 | 0.44 | 83 |
+| 30 | 400 | 130 | 9615 | 6.88 | 0.54 | 87 |
+| 100 | 400 | 130 | 9671 | 6.89 | 0.55 | 86 |
+
+**What a digester holds under a known load tells what it bears.** At 400 and 130 the 20 digesters
+ended at a pH between 6.72 and 7.05. The 8 that ended at 6.72 to 6.80 (the seeds 6001, 6006,
+6007, 6008, 6011, 6017, 6019 and 6020) all collapsed under `start_110_480_172`, between day 18
+and day 20. The 12 that ended at 6.87 to 7.05 all bore it, with a lowest pH of 6.70 to 6.91 and
+scores from 14455 to 15959.
+
+**The readings tell the two kinds apart days before the collapse.** Under `start_110_480_172` all
+20 digesters had the same pump rates at every decision. Means of the readings of the 8 that
+collapsed and of the 12 that did not:
+
+| Day | pH: collapsed later | pH: did not | Inorganic carbon (mM): collapsed later | Inorganic carbon: did not | Acids (kgCOD/m3): collapsed later | Acids: did not |
+|---:|---:|---:|---:|---:|---:|---:|
+| 8 | 7.02 | 7.06 | 114 | 116 | 1.14 | 1.34 |
+| 10 | 6.94 | 7.02 | 104 | 111 | 0.50 | 0.67 |
+| 13 | 6.83 | 6.92 | 86 | 99 | 0.37 | 0.46 |
+| 16 | 6.73 | 6.88 | 74 | 91 | 0.40 | 0.46 |
+| 20 | 5.88 | 6.83 | 59 | 85 | 0.77 | 0.66 |
+
+The acids gave no warning. The pH and the inorganic carbon did, from day 10 on.
+
+**What was not tried.** No program has raised the concentrate faster than by 6.5 m3/d per
+decision with the sludge pump at 0, or to a higher first rate than 130, and none has brought the
+sludge back faster than by 8 m3/d per decision. The limits of the pumps allow 10 and 34. No
+program has loaded a digester beyond 480 and 172.
+
+**These findings are not shown to the agents.** The idea of a start without sludge came from
+the record of a controller of the benchmark, and the maintainer decided on 2026-11-24 that an
+agent is to understand the challenge, its tools and what it may tune, and is shown no solution.
+The same holds for the findings of the section before this one, which were the setup's own and
+partly misleading. The description in `setup.json` is now the task's own document in short, and
+the baseline of the setup plays the three pairs of fixed rates of that document: `hold_85_0`,
+`hold_200_100` and `hold_200_110`. This section and the one before it stay as a record of what
+the environment does.
+
+## The plugin against the benchmark's own PI controller (2026-11-24)
+
+The two PI loops of the benchmark's record, with the ten numbers of its `controller.json`, were
+written as a program of the loop: 40 lines that read the pH, the four acids, `lab_age` and where
+the pumps stand. Played through the loop's runtime on the training seeds 6001 to 6100, on the
+backend `jax`, the program scored 14953.0 m3/d with no failed episode. The scorecard of the
+benchmark gives 14953.0 for the same seeds, and the 100 scores of the episodes differ from those
+of the scorecard by at most 0.0000000001 m3/d.
+
+This shows two things. The episodes of the plugin are the episodes of the benchmark. And nothing
+in the form of a program of the loop, the late laboratory values, the missing clock or the limits
+of the pumps keeps a program from the level of the benchmark's controllers: what run 1 lacked was
+in the programs.
+
+No agent sees this program or its ten numbers. It is in no file of the plugin: the test
+`test_the_benchmarks_own_pi_controller_scores_in_the_plugin_what_its_scorecard_says` builds it
+from microbesGYM's record when it runs, and compares two training episodes.
 
 ## Prices (2026-11-24)
 
