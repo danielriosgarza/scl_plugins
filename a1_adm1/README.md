@@ -195,7 +195,7 @@ refuses to write over the result of that run.
 | `a1_adm1.py` | The adapter: the benchmark's `Episode` as an environment of the loop |
 | `setup.json` | The goal, what the agents are told about the task, the observables, the seeds, the failure, the rules, the agents and the limits |
 | `checks.py` | The marks of the fixed milestones |
-| `programs/` | Programs that read no sensor: three fixed pairs of rates from `TASK.md`, nine rises of both pumps together and five starts without sludge. The setup's baseline plays the three fixed pairs; the others are a record of experiments (`results/README.md`) and are not shown to the agents |
+| `programs/` | Programs that read no sensor: three fixed pairs of rates from `TASK.md`, nine rises of both pumps together and five starts without sludge. The setup's baseline plays the three fixed pairs; the others are a record of experiments (`results/README.md`) and are not shown to the agents. `programs/search_check` is a check of the loop's search, written by hand, with ten numbers left to the search (its docstring, and `scl tune`); it is not shown to the agents either |
 | `bridge.py` | A program as a controller of the benchmark's runner, for the test and the validation |
 | `results/` | The record: the baseline, every iteration and its test result |
 | `tests/` | The adapter and the bridge against the benchmark's code and the numbers of `TASK.md` |
