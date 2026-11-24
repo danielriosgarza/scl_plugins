@@ -1,0 +1,25 @@
+[project]
+name = "a1-adm1-plugin"
+version = "0.1.0"
+description = "The task loading of microbesGYM's environment a1_adm1 as a soft_control_loop plugin."
+requires-python = ">=3.12"
+dependencies = [
+    "soft-control-loop",
+    "mgym-engine",
+    "mgym-bench",
+]
+
+[tool.uv.sources]
+soft-control-loop = { path = "../../soft_control_loop", editable = true }
+mgym-engine = { path = "../../microbesGYM_v2/packages/mgym-engine", editable = true }
+mgym-bench = { path = "../../microbesGYM_v2/packages/mgym-bench", editable = true }
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "slow: plays whole episodes of 568 decisions; deselect with -m 'not slow'",
+]
