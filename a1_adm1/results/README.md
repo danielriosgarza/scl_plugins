@@ -46,6 +46,36 @@ The bridge was checked on four training seeds, 6001 to 6004, with the backend `j
 the benchmark's PI controller file and gave the scores of the benchmark's own training scorecard
 of that controller to within 2 x 10^-11 m3/d. No development seed and no final seed was played.
 
+## Prices of run 1 (2026-11-24)
+
+The loop counts the dollars of a run from list prices, in dollars per million tokens. These are
+the prices of the providers on 2026-11-24 for the models of run 1, as `setup.json` holds them:
+
+| Model in the setup | Priced as | Input | Output | Cached input | Source |
+|---|---|---:|---:|---:|---|
+| `opus` | Claude Opus 5.5 | 4.00 | 20.00 | 0.20 | [Claude pricing](https://platform.claude.com/docs/en/about-claude/pricing) |
+| `sonnet` | Claude Sonnet 5.5 | 2.00 | 10.00 | 0.10 | the same page |
+| `haiku` | Claude Haiku 5.5, prompts up to 100,000 tokens | 0.10 | 0.50 | 0.01 | the same page |
+| `gpt-6.2-astra` | GPT-6.2 Astra, standard | 8.00 | 40.00 | 0.40 | [OpenAI pricing](https://developers.openai.com/api/docs/pricing) |
+| `gemini-4-neon` | Gemini 4 Neon, global | 3.00 | 15.00 | 0.15 | [Google Cloud pricing](https://cloud.google.com/model-garden/pricing) |
+| `gemini-4-carbon` | Gemini 4 Carbon, global, until 2026-11-30 | 2.00 | 10.00 | none listed | the same page |
+| `gemini-4-hydrogen` | Gemini 4 Hydrogen, global | 1.50 | 7.50 | 0.075 | the same page |
+
+What the dollars of a run do not hold:
+
+- Gemini 4 Carbon costs 4.00 and 20.00 from 2026-12-01. A run after that date needs the new
+  prices.
+- Claude Haiku 5.5 costs 0.50 and 2.50 for a prompt of more than 100,000 tokens. The prompts of
+  a coding agent are far shorter.
+- Claude Code writes part of a prompt to the cache at 1.25 times the input price. The loop counts
+  those tokens at the input price.
+- The Antigravity tool reports no cached tokens, so all input of the three Gemini models is
+  counted at the input price.
+- `opus`, `sonnet` and `haiku` are names that Claude Code resolves to a model. The prices
+  here hold only if they resolve to Opus 5.5, Sonnet 5.5 and Haiku 5.5 on the computer of the run.
+
+The dollars measure use at list prices. A subscription charges differently.
+
 ## Iterations
 
 None yet. Each iteration gets a folder `iteration_N/` with the setup that trained it, the result

@@ -96,10 +96,17 @@ uv run scl run setup.json --workdir runs/run_1    # add --resume to continue a s
 
 A run asks the agents of the setup through the command-line tools of your own subscriptions. The
 limits of a run (`budgets`, `explore`, `patience`) and the `prices` in `setup.json` are set by the
-maintainer for each run. The setup as it is here has a dollar limit of 50, `attempts` at 0 and no
-`prices`. With `attempts` at 0 a run asks the coordinator for one plan and ends, and without
-`prices` the loop counts every answer as 0 dollars, so the dollar limit would never end a run.
-Both are set before the first run.
+maintainer for each run. The setup as it is here is that of run 1:
+
+- **Dollars.** The maintainer's limit for run 1 is 50 dollars. The loop compares the dollars with
+  its limit only before a round, so a run ends up to one round above it. The setup therefore
+  stops the run at 42.
+- **Rounds.** A round tries 5 strategies, one for each coding agent (`explore`). A run has at most
+  50 attempts, which is 10 rounds, and ends after 3 rounds in a row without progress (`patience`).
+- **Prices** are the list prices of the providers on 2026-11-24, in dollars per million tokens of
+  input, output and input read from the provider's cache. `results/README.md` gives the table
+  with its sources. The dollars measure use at these prices. They are not what a subscription
+  charges, and the limits of a subscription still apply.
 
 ## Test and validate
 

@@ -253,10 +253,48 @@
   }
  ],
  "budgets": {
-  "dollars": 50,
-  "attempts": 0,
+  "dollars": 42,
+  "attempts": 50,
   "episodes": 60,
   "max_steps": null
+ },
+ "explore": 5,
+ "patience": 3,
+ "prices": {
+  "opus": {
+   "input": 4.0,
+   "output": 20.0,
+   "cached": 0.2
+  },
+  "sonnet": {
+   "input": 2.0,
+   "output": 10.0,
+   "cached": 0.1
+  },
+  "haiku": {
+   "input": 0.1,
+   "output": 0.5,
+   "cached": 0.01
+  },
+  "gpt-6.2-astra": {
+   "input": 8.0,
+   "output": 40.0,
+   "cached": 0.4
+  },
+  "gemini-4-neon": {
+   "input": 3.0,
+   "output": 15.0,
+   "cached": 0.15
+  },
+  "gemini-4-carbon": {
+   "input": 2.0,
+   "output": 10.0
+  },
+  "gemini-4-hydrogen": {
+   "input": 1.5,
+   "output": 7.5,
+   "cached": 0.075
+  }
  },
  "roles": {
   "coordinator": {
