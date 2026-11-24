@@ -1,0 +1,32 @@
+{
+ "reason": "the dollar budget is spent",
+ "attempts": 15,
+ "dollars": 43.5247,
+ "top": {
+  "attempt": 6,
+  "mean": 11086.28041953178,
+  "failed": 0
+ },
+ "selected": {
+  "attempt": 2,
+  "mean": 10277.348984542472,
+  "evaluation_mean": 10046.018163832214,
+  "endings": {
+   "truncated": 100
+  },
+  "failed": 0
+ },
+ "finalists": 12,
+ "barred": {},
+ "played": {
+  "baseline": {"episodes": 60, "seconds": 158.7},
+  "debug": {"episodes": 30, "seconds": 481.8},
+  "evaluation": {"episodes": 900, "seconds": 2360.2},
+  "trial": {"episodes": 120, "seconds": 304.5},
+  "selection": {"episodes": 1200, "seconds": 2862.6}
+ },
+ "met": ["hold", "plus_5", "plus_10", "plus_15", "plus_20"],
+ "skills": {"ewma_update": 956171, "slew_limited_rate": 340800},
+ "imported_by": {},
+ "package": {"commit": "939b16d", "dirty": false}
+}
