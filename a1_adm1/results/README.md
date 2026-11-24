@@ -80,6 +80,10 @@ The dollars measure use at list prices. A subscription charges differently.
 
 ## Iterations
 
-None yet. Each iteration gets a folder `iteration_N/` with the setup that trained it, the result
-of the run, the selected program, its test result on the seeds 7001 to 7050 from `bridge.py`, and
-a note on what was changed for the next iteration and why.
+Each iteration gets a folder `iteration_N/` with the setup that trained it, the result of the
+run, the selected program, its test result on the seeds 7001 to 7050 from `bridge.py`, and a note
+on what was changed for the next iteration and why.
+
+| Iteration | Run | Selected program | Selection seeds: mean score, failed | Test seeds: mean score, failed | Dollars at list prices |
+|---|---|---|---|---|---:|
+| [1](iteration_1/README.md) | Run 1, 2026-11-24, 3 rounds, 15 attempts | Attempt 2, gpt-6.2-astra | 10277.3, 0 of 100 | Not run yet | 43.52 |
