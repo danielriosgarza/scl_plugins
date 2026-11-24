@@ -3,7 +3,9 @@
 The fast tests play a few decisions. The tests marked slow play whole episodes of 568 decisions,
 about half a minute each, and compare the scores with the numbers that TASK.md publishes for the
 fixed rates 200 and 100 m3/d ("What the score does not see"): 8768, 9654 and 8839 on the seeds
-6001, 6002 and 6008.
+6001, 6002 and 6008. One of them plays the two PI loops of the benchmark's own record, written as
+a program of the loop, and compares its scores with the benchmark's scorecard; the settings are
+read from microbesGYM when the test runs and are in no file of the plugin.
 """
 
 import json
@@ -140,6 +142,20 @@ def test_a_slow_rise_moves_both_pumps_in_proportion_and_then_holds_them(env):
     assert rates[44] == rates[49] == pytest.approx((300.0, 130.0))
 
 
+def test_a_start_without_sludge_closes_the_sludge_pump_first_and_keeps_no_clock(env):
+    program = load_program(FOLDER / "programs" / "start_110_400_130")
+    trace = runtime.run_episode(env, program, 6001, env.observation_keys, max_steps=90)
+    rates = [(step.observation["sludge_rate"], step.observation["carbohydrate_rate"])
+             for step in trace.steps]
+    assert rates[0] == (85.0, 0.0) and trace.failure is None
+    assert rates[1] == pytest.approx((51.0, 5.5)) and rates[3] == pytest.approx((0.0, 16.5))
+    assert rates[20] == pytest.approx((0.0, 110.0))
+    assert rates[21] == pytest.approx((7.0, 110.35))
+    assert rates[85] == rates[89] == pytest.approx((400.0, 130.0))
+    source = (FOLDER / "programs" / "start_110_400_130" / "program.py").read_text()
+    assert "memory[" in source and "+= 1" not in source
+
+
 def _trace(score, failed):
     return traces.Trace({"seed": 0}, final_observation={"net_methane": score, "failed": failed})
 
@@ -171,6 +187,59 @@ def test_fixed_rates_give_the_scores_of_task_md():
         assert final["net_methane"] == pytest.approx(
             0.2 * final["net_methane_start"] + 0.4 * final["net_methane_middle"]
             + 0.4 * final["net_methane_end"], rel=1e-9)
+
+
+PI_PROGRAM = '''import math
+
+LOOPS = {loops}
+
+
+def act(observation, memory):
+    action = {{}}
+    for name, sensors, setpoint, gain, integral_time, filter_time, start, high, hours in LOOPS:
+        state = memory.setdefault(name, {{"output": start, "integral": 0.0, "filtered": None}})
+        values = [observation[sensor] for sensor in sensors]
+        if all(value is not None for value in values) and (
+                sensors == ["ph"] or observation["lab_age"] == 4):
+            first = state["filtered"] is None
+            if first:
+                state["filtered"] = math.fsum(values)
+            else:
+                share = 1.0 - math.exp(-hours / filter_time)
+                state["filtered"] += share * (math.fsum(values) - state["filtered"])
+            error = state["filtered"] - setpoint
+            behind, push = state["output"] - observation[name], gain * error
+            lags = (behind > 1e-9 * high and push > 0.0) or (behind < -1e-9 * high and push < 0.0)
+            if not first and not lags:
+                state["integral"] += error * hours
+            state["output"] = start + gain * (error + state["integral"] / integral_time)
+        action[name] = min(max(state["output"], 0.0), high)
+    return [action["sludge_rate"], action["carbohydrate_rate"]], "two PI loops"
+'''
+
+
+@pytest.mark.slow
+def test_the_benchmarks_own_pi_controller_scores_in_the_plugin_what_its_scorecard_says(tmp_path):
+    repository = Path(a1_adm1.load_task().environment.folder).parents[1]
+    record = repository / "results" / "a1_adm1" / "loading" / "pi"
+    loops = [[loop["actuator"]["id"], loop["measured"]["sensors"], loop["setpoint"], loop["gain"],
+              loop["integral_time_h"], loop["filter_time_h"], loop["start"],
+              {"sludge_rate": 1000.0, "carbohydrate_rate": 300.0}[loop["actuator"]["id"]],
+              {"sludge_rate": 24.0, "carbohydrate_rate": 6.0}[loop["actuator"]["id"]]]
+             for loop in json.loads((record / "controller.json").read_text())["settings"]["loops"]]
+    (tmp_path / "program.py").write_text(PI_PROGRAM.format(loops=repr(loops)))
+    card = {episode["seed"]: episode["metrics"] for episode in json.loads(
+        (record / "training.scorecard.json").read_text())["episodes"]}
+    seeds = (6001, 6061)
+    played = runtime.run_in_children([
+        {"environment": "a1_adm1:Loading", "program_path": str(tmp_path), "seed": seed,
+         "observables": a1_adm1.Loading().observation_keys, "timeout": 900,
+         "kwargs": {"backend": "jax"}} for seed in seeds])
+    for seed, trace in zip(seeds, played):
+        final = trace.final_observation
+        assert trace.failure is None and final["failed"] is False
+        assert final["net_methane"] == pytest.approx(card[seed]["net_methane"], abs=0.01)
+        assert final["min_ph"] == pytest.approx(card[seed]["min_ph"], abs=1e-4)
 
 
 @pytest.mark.slow

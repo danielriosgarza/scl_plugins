@@ -43,12 +43,21 @@ decision.
   what the fixed rates 200 and 100 m3/d score on the evaluation seeds, and the others are every
   1000 m3/d from 10 000 to 17 000. Results of other controllers set no mark and are not shown to
   the agents.
-- **Baseline.** Four programs that read no sensor: fixed rates, and three that raise both pumps
-  slowly to a pair of rates and hold them. The setup's description tells the agents what these and
-  five more such programs showed: how much more a digester bears when it is loaded slowly, how
-  digesters differ, and which readings announce each of the two ways to collapse
-  (`results/README.md`).
-- **Tuning.** A program may declare up to 8 of its numbers as constants with a range. The loop
+- **Baseline.** Four programs that read no sensor: fixed rates, one that raises both pumps
+  slowly together, and two that start without sludge, with the sludge pump at 0 while the
+  concentrate rises, and then load to a pair of rates. The setup's description tells the agents
+  what these and ten more such programs showed: that the start decides and the sludge pump
+  endangers it, how digesters differ, and which readings tell a digester that will collapse from
+  one that will not (`results/README.md`).
+- **What the agents read of an episode.** The summaries cut an episode at the decisions 8, 16,
+  24, 32, 40, 48, 64, 80, 160, 240 and 400 (`phases` in the setup), so the first 12 days are
+  shown in parts of 2 days. Equal parts of 71 decisions would hide a collapse, which takes days.
+- **Knowledge of the benchmark.** The description tells the agents what the designer of the
+  task's PI controller chose before any search: which pump follows which reading, in which
+  direction, how a loop computes, and the ranges of its ten numbers
+  (`results/a1_adm1/loading/pi/README.md` of microbesGYM). It does not tell what any search of
+  the benchmark found, and no score of another controller.
+- **Tuning.** A program may declare up to 10 of its numbers as constants with a range. The loop
   then searches better values on 16 training episodes that no agent sees, and keeps them if the
   program ranks better with them on the evaluation seeds (`tuning` in the setup, and the README
   of soft_control_loop). No agent is asked, so a search costs computer time and no dollars.
@@ -155,7 +164,7 @@ refuses to write over the result of that run.
 | `a1_adm1.py` | The adapter: the benchmark's `Episode` as an environment of the loop |
 | `setup.json` | The goal, what the agents are told about the task, the observables, the seeds, the failure, the rules, the agents and the limits |
 | `checks.py` | The marks of the fixed milestones |
-| `programs/` | Programs that read no sensor: three fixed pairs of rates from `TASK.md` and nine slow rises. The setup's baseline plays four of them |
+| `programs/` | Programs that read no sensor: three fixed pairs of rates from `TASK.md`, nine rises of both pumps together and five starts without sludge. The setup's baseline plays four of them |
 | `bridge.py` | A program as a controller of the benchmark's runner, for the test and the validation |
 | `results/` | The record: the baseline, every iteration and its test result |
 | `tests/` | The adapter and the bridge against the benchmark's code and the numbers of `TASK.md` |

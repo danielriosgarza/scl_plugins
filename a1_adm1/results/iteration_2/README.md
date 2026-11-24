@@ -42,9 +42,45 @@ run 1.
 Nothing here used a test seed or a validation seed. Every episode behind the new description is a
 training episode.
 
+## A second review, before the run (2026-11-24)
+
+The maintainer asked for a critical review of why the loop does not work on this task. It found
+three more causes, and the setup changed again before any agent was asked.
+
+5. **The description gave a wrong picture of the digester.** It said "load slowly", and every
+   program behind it raised both pumps together. The benchmark's record of its PI controller
+   shows a start with the sludge pump at zero. Programs of this plugin that read no sensor
+   confirmed it on training seeds: after a start without sludge, the rates 400 and 130 hold in
+   100 of 100 digesters at 12 209 to 12 289 m3/d, where 11 of 20 collapsed when both pumps rose
+   together (`../README.md`, "A start without sludge").
+6. **A coding agent never saw an episode of its own program.** Each program of run 1 was one
+   answer. soft_control_loop 0.5.0 can show a coding agent the result of its program and let it
+   write the program again (`revise`). It also cuts the summaries where the setup says
+   (`phases`).
+7. **A coding agent's prompt was about 110 000 tokens**, most of them the summaries of 60
+   baseline episodes that differed little. With 0.5.0 the agents read a table of all baseline
+   episodes of a condition and the summaries of two.
+
+A check of the plugin itself found nothing wrong: the benchmark's PI controller, written as a
+program of the loop, scores what its scorecard says, 14 953.0 on the 100 training seeds
+(`../README.md`, "The plugin against the benchmark's own PI controller").
+
+| | After the first review | Now | Why |
+|---|---|---|---|
+| soft_control_loop | 0.4.0 | 0.5.0 | Causes 6 and 7 |
+| Description | Nine rises of both pumps together | Also five starts without sludge, the readings that tell a digester that will collapse from one that will not, and what the designer of the task's PI controller chose before its search: the pairing, the directions and the ranges | Cause 5 |
+| Baseline | `hold_200_100`, `ramp_300_130_3`, `ramp_400_150_3`, `ramp_480_172_1` | `hold_200_100`, `ramp_300_130_3`, `start_110_400_130`, `start_110_480_172` | Cause 5: the agents read a start without sludge that every digester bears and one that only the richer ones bear |
+| Phases of a summary | 4 or 8 equal parts | Cut at the decisions 8, 16, 24, 32, 40, 48, 64, 80, 160, 240 and 400 | Cause 6: the start and a collapse take days, and a part of 71 decisions hides both |
+| Constants of a tuning | Up to 8 | Up to 10 | Two loops of feedback have ten numbers |
+| Revise | | Not set: the maintainer decides, since each revision costs one more answer of a coding agent | Cause 6 |
+
+What the agents are told of the benchmark is a decision of the maintainer. The setup holds the
+choice that was put to him as the recommended one: what a person chose for the PI controller
+before its search, and nothing that a search of the benchmark found.
+
 ## What a tuning costs in computer time
 
-A program with 8 constants plays at most 9 x 6 x 16 = 864 tuning episodes, then 80 evaluation
+A program with constants plays at most 9 x 6 x 16 = 864 tuning episodes, then 80 evaluation
 episodes with its declared values and 80 with the tuned ones, and 80 more if the halfway values
 are tried. At about 11 s of one core for an episode, that is up to 3.4 hours of one core for an
 attempt, or about 15 minutes on 14 cores.
