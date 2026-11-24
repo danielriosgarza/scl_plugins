@@ -1,7 +1,7 @@
 # Iteration 2: the setup for run 2 (2026-11-24)
 
-Run 2 has not been made yet. This file records what was changed after iteration 1 and why, so
-that the run can be read against it. Iteration 1 was not tested: the maintainer stopped it before
+This file records what was changed after iteration 1 and why, the first round of run 2, and
+what was changed after that round. Iteration 1 was not tested: the maintainer stopped it before
 any test seed was played (`../iteration_1/README.md`).
 
 ## Why the setup changed
@@ -96,11 +96,60 @@ together with this fact.
 
 ## What a tuning costs in computer time
 
-A program with constants plays at most 9 x 6 x 16 = 864 tuning episodes, then 80 evaluation
-episodes with its declared values and 80 with the tuned ones, and 80 more if the halfway values
-are tried. At about 11 s of one core for an episode, that is up to 3.4 hours of one core for an
-attempt, or about 15 minutes on 14 cores.
+In round 1 a program with constants played at most 9 x 6 x 16 = 864 tuning episodes, then 80
+evaluation episodes with its declared values and 80 with the tuned ones, and 80 more if the
+halfway values were tried. On the 14 cores of the computer that played the run, a tuning took 42
+to 45 minutes and an attempt about an hour.
 
-## Run 2
+## Run 2, round 1
 
-Not made yet. Its result, its attempts, its cost and its test go here.
+Run 2 started on 2026-11-24 with soft_control_loop 0.5.0, without `revise`. The coordinator
+planned the first milestone, `hold` (a mean of 9277 with no failed episode), in three subgoals:
+`start_up` (decisions 1 to 80), `raise_load` (decisions 81 to 400) and `safe_run_out`. Round 1
+tried five strategies for `start_up`. Each program played the 80 evaluation episodes of the
+seeds 6021 to 6100, and no program failed one.
+
+| Attempt | Coding agent | Strategy | Mean with the declared values | Mean kept | What the search did |
+|---|---|---|---|---|---|
+| 1 | gemini-4-neon | `feed_follows_methane` | 10 432 | 10 930.0 | Tuned values kept |
+| 2 | gpt-6.2-astra | `ph_stat_feed` | 9 600 | 9 835.1 | Tuned values kept |
+| 3 | gemini-4-carbon | `gas_share_pacer` | 10 117.6 | 10 638.4 | Tuned values kept |
+| 4 | claude haiku | `acid_setpoint_ramp` | 10 600.6 | 10 600.6 | Tuned values scored 11 261.9 and the halfway values 10 908.6, each with 1 failed episode of 80, so the declared values were kept |
+| 5 | gemini-4-hydrogen | `retain_then_dilute` | | | Still playing when this was written |
+
+An attempt took 58 to 64 minutes, 42 to 45 of them the search. The run had cost 6.08 dollars
+when attempt 5 started. The maintainer had the run stopped at the end of round 1.
+
+The agents read the true values of training episodes, as the maintainer allowed (above). No
+program received one.
+
+## A third review, after round 1 (2026-11-24)
+
+The maintainer had the run stopped after round 1, to find where the loop failed before any more
+was spent. Three more causes were found, all in soft_control_loop, and 0.6.0 changes each.
+
+8. **The loop told the agents to keep every range narrow.** Its text on tuning said that each
+   constant gets "a range that is safe at both ends". The coordinator passed this on as "each
+   range narrow and safe at both ends", and every strategy of its plan named a ceiling for the
+   concentrate of "about 100 to 140" m3/d, around the 100 and 110 of the task's trials with
+   fixed rates. So the ranges for the ceiling were 108 to 126, 109 to 117, 105 to 118 and 100 to
+   140, and every episode of two programs ended at one pair of rates. A program whose feed is
+   capped near the rates of the baseline scores near the baseline, whatever it reads.
+9. **The search could not leave such a range, and was small.** It changed one constant at a
+   time by a tenth of its range: 54 candidates on 16 episodes each, 864 episodes. It gained 2 to
+   5 %, all four searches were still rising in their last generation, and the tuned values of
+   one program failed 1 of 80 evaluation episodes after passing all 16 tuning episodes, so its
+   gain of 6 % was dropped.
+10. **An attempt took an hour**, most of it the search, which played one episode at a time in
+    each of 14 processes. With `revise`, a coding agent would have read how its program played
+    only after that hour, and each revision would have cost another search.
+
+| | Round 1 | Now | Why |
+|---|---|---|---|
+| soft_control_loop | 0.5.0 | 0.6.0 | Causes 8 to 10 |
+| What the agents are told about ranges | Safe at both ends | As wide as the constant keeps its meaning, up to the limits of the pumps where it is a rate. The search and its rank find what is safe. The rates of the task's trials are no limits for a program that reads its sensors | Cause 8 |
+| Search of the constants | One constant at a time, at most 9 candidates x 6 generations on 16 seeds | Candidates drawn across all ranges around the best of the generation before: 28 candidates x 8 generations, each on 8 of the 48 seeds 31001 to 31048, and a final on all 48 | Cause 9 |
+| How a search plays its episodes | One at a time in each process | 16 side by side in each process, in the engine's lanes | Cause 10 |
+| Revise | Not set | 2, the maintainer's choice. A coding agent reads the episodes of its program with the values it declared and may write it again, before the search | Cause 10 |
+
+No test seed and no validation seed was played.
