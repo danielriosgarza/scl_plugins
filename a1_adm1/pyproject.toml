@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "The task loading of microbesGYM's environment a1_adm1 as a soft_control_loop plugin."
 requires-python = ">=3.12"
 dependencies = [
-    "soft-control-loop",
+    "soft-control-loop>=0.4.0",
     "mgym-engine",
     "mgym-bench",
 ]

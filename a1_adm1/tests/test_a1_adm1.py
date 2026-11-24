@@ -107,14 +107,37 @@ def test_the_bridge_refuses_what_the_runtime_would_reject(tmp_path):
 def test_the_setup_loads_and_keeps_away_from_the_test_and_validation_seeds():
     setup = config.load_setup(FOLDER / "setup.json")
     used = {*setup.seeds["debug"], *setup.seeds["evaluation"], *setup.baseline["seeds"],
-            *setup.selection["seeds"]}
+            *setup.selection["seeds"], *setup.tuning["seeds"]}
     assert not used & {*range(7001, 7051), *range(12001, 12051), *range(11001, 11051)}
+    judged = {*setup.seeds["evaluation"], *setup.selection["seeds"]}
+    assert not judged & {*setup.tuning["seeds"], *setup.baseline["seeds"], *setup.seeds["debug"]}
+    assert not {*setup.seeds["evaluation"]} & {*setup.selection["seeds"]}
+    assert (setup.kwargs, setup.reuse) == ({"backend": "jax"}, True)
+    assert all((FOLDER / path / "program.py").is_file()
+               for path in setup.baseline["conditions"].values())
     assert setup.observables == a1_adm1.Loading().observation_keys
     assert (setup.score, setup.failure) == ("net_methane", "failed")
     assert [rule["name"] for rule in setup.rules] == ["no_clock", "own_memory", "observation_only"]
     assert setup.budgets["max_steps"] is None
     found = {name for name in dir(checks) if name.startswith("check_")}
     assert {f"check_{milestone['name']}" for milestone in setup.milestones} == found
+
+
+def test_the_first_mark_is_what_the_fixed_rates_scored(env):
+    assert checks.check_hold([_trace(checks.BASE, False)])
+    assert not checks.check_hold([_trace(checks.BASE - 1.0, False)])
+    assert not checks.check_reach_10000([_trace(9999.9, False)])
+
+
+def test_a_slow_rise_moves_both_pumps_in_proportion_and_then_holds_them(env):
+    program = load_program(FOLDER / "programs" / "ramp_300_130_3")
+    trace = runtime.run_episode(env, program, 6001, env.observation_keys, max_steps=50)
+    rates = [(step.observation["sludge_rate"], step.observation["carbohydrate_rate"])
+             for step in trace.steps]
+    assert rates[0] == (85.0, 0.0) and trace.failure is None
+    assert rates[1] == pytest.approx((85.0 + 215.0 * 3 / 130, 3.0))
+    assert rates[10] == pytest.approx((85.0 + 215.0 * 30 / 130, 30.0))
+    assert rates[44] == rates[49] == pytest.approx((300.0, 130.0))
 
 
 def _trace(score, failed):

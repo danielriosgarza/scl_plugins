@@ -6,16 +6,16 @@ collapsed, or the episode did not run all its decisions) or when it has no recor
 program failed before the end. The checks are batch checks: each judges all evaluation episodes
 together, so it passes or fails as a whole whatever the setup's pass rate.
 
-The marks rise from the loop's own baseline. Its best fixed rates, 200 and 100 m3/d, scored a
-mean of BASE on the evaluation seeds 6021 to 6080, with no failed episode (results/README.md).
-The first mark is BASE, and each further mark is BASE times a factor. Results of other
-controllers of the benchmark set no mark.
+The first mark is BASE: what the fixed rates 200 and 100 m3/d (programs/hold_200_100) scored on
+the evaluation seeds 6021 to 6100, with no failed episode (results/README.md). The further marks
+are every 1000 m3/d from 10 000 to 17 000. Results of other controllers of the benchmark set no
+mark.
 
 This module defines BASE; mark, which returns the check of one mark; and one check for each fixed
 milestone of the setup.
 """
 
-BASE = 9216.9
+BASE = 9277.5
 
 
 def mark(score):
@@ -32,10 +32,12 @@ def mark(score):
     return check
 
 
-check_hold = mark(9217)
-check_plus_5 = mark(9678)
-check_plus_10 = mark(10139)
-check_plus_15 = mark(10599)
-check_plus_20 = mark(11060)
-check_plus_25 = mark(11521)
-check_plus_30 = mark(11982)
+check_hold = mark(9277)
+check_reach_10000 = mark(10000)
+check_reach_11000 = mark(11000)
+check_reach_12000 = mark(12000)
+check_reach_13000 = mark(13000)
+check_reach_14000 = mark(14000)
+check_reach_15000 = mark(15000)
+check_reach_16000 = mark(16000)
+check_reach_17000 = mark(17000)

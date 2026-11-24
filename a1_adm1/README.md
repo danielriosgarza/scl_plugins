@@ -39,9 +39,23 @@ decision.
 - **Rules that no episode can show.** The benchmark checks three rules by reading the code of a
   controller, and the setup gives them to the reviewer as `rules`: no clock, nothing kept outside
   the memory, and the observation as the only source. An attempt that breaks one is barred.
-- **Milestones** are marks on the mean score with no failed episode (`checks.py`). They rise from
-  the loop's own baseline. Results of other controllers set no mark and are not shown to the
-  agents.
+- **Milestones** are marks on the mean score with no failed episode (`checks.py`). The first is
+  what the fixed rates 200 and 100 m3/d score on the evaluation seeds, and the others are every
+  1000 m3/d from 10 000 to 17 000. Results of other controllers set no mark and are not shown to
+  the agents.
+- **Baseline.** Four programs that read no sensor: fixed rates, and three that raise both pumps
+  slowly to a pair of rates and hold them. The setup's description tells the agents what these and
+  five more such programs showed: how much more a digester bears when it is loaded slowly, how
+  digesters differ, and which readings announce each of the two ways to collapse
+  (`results/README.md`).
+- **Tuning.** A program may declare up to 8 of its numbers as constants with a range. The loop
+  then searches better values on 16 training episodes that no agent sees, and keeps them if the
+  program ranks better with them on the evaluation seeds (`tuning` in the setup, and the README
+  of soft_control_loop). No agent is asked, so a search costs computer time and no dollars.
+- **Engine.** Every episode of the loop runs on the engine's backend `jax`, in child processes
+  that each play one episode after another (`"reuse": true`), so the model is compiled once per
+  child. An episode then takes about 11 s of one processor core. On the backend `reference` it
+  takes about 27 s, and the scores differ by less than 0.001 m3/d.
 - **Reward.** The reward of a decision is its true net methane, the number that the score
   averages. The benchmark provides it for trainings. No program sees it.
 
@@ -53,13 +67,16 @@ microbesGYM has one rule for seeds: train, test, validate.
 |---|---|---|---|
 | Baseline | 6001 to 6020 | training | The agents |
 | Debug | 6001, 6002 | training | The coding agent |
-| Evaluation | 6021 to 6080 | training | The agents |
-| Selection | 6081 to 6100 and 30001 to 30080 | training | No agent. The loop picks its winner here |
+| Evaluation | 6021 to 6100 | training | The agents |
+| Tuning | 31001 to 31016 | training | No agent. The loop searches the constants of a program here |
+| Selection | 30001 to 30100 | training | No agent. The loop picks its winner here |
 | Test | 7001 to 7050 | development | A person, after a run has ended, with `bridge.py` |
 | Validation | 12001 to 12050 | final | Nobody until the maintainer says so. Then once |
 
 The loop starts every episode as a training episode, and the benchmark refuses a development or
-a final seed there, so a run cannot play a test or a validation seed.
+a final seed there, so a run cannot play a test or a validation seed. The task lists the training
+seeds 6001 to 6100. The seeds from 30001 and from 31001 are further training episodes, which the
+benchmark's own trainings also play.
 
 **Nothing may play a seed from 12001 to 12050 before the one validation run.** No iteration is
 allowed after that run, and nothing is changed because of it.
@@ -91,16 +108,19 @@ tested with microbesGYM at commit `43491a5`.
 
 ```bash
 uv run scl agents setup.json                      # every agent answers once
-uv run scl run setup.json --workdir runs/run_1    # add --resume to continue a stopped run
+uv run scl run setup.json --workdir runs/run_2    # add --resume to continue a stopped run
 ```
 
 A run asks the agents of the setup through the command-line tools of your own subscriptions. The
-limits of a run (`budgets`, `explore`, `patience`) and the `prices` in `setup.json` are set by the
-maintainer for each run. The setup as it is here is that of run 1:
+agents, the limits of a run (`budgets`, `explore`, `patience`) and the `prices` in `setup.json`
+are set by the maintainer for each run. The setup as it is here is that of run 2:
 
-- **Dollars.** The maintainer's limit for run 1 is 50 dollars. The loop compares the dollars with
-  its limit only before a round, so a run ends up to one round above it. The setup therefore
-  stops the run at 42.
+- **Agents.** The coordinator is `fable`. The five coding agents, the reviewer (`sonnet`) and the
+  skill agent (`opus`) are those of run 1.
+- **Dollars.** The maintainer's limit for run 2 is 100 dollars. The loop asks no agent once the
+  dollars have reached `budgets.dollars`, and it starts a round only if there is room for one
+  like the last. An answer that is on its way when the limit is reached is still paid, so the
+  setup stops at 97.
 - **Rounds.** A round tries 5 strategies, one for each coding agent (`explore`). A run has at most
   50 attempts, which is 10 rounds, and ends after 3 rounds in a row without progress (`patience`).
 - **Prices** are the list prices of the providers on 2026-11-24, in dollars per million tokens of
@@ -116,11 +136,11 @@ the benchmark's own runner:
 ```bash
 # 1. The computer gives the benchmark's numbers: this must print a mean of 14834.3.
 uv run python bridge.py controller ../../microbesGYM_v2/results/a1_adm1/loading/pi/controller.json \
-    --split development --backend jax --workers 4 --out results/iteration_1/pi_check.json
+    --split development --backend jax --workers 4 --out results/iteration_2/pi_check.json
 
 # 2. The program on the test seeds.
-uv run python bridge.py program runs/run_1/attempts/NNN --skills runs/run_1/library \
-    --split development --backend jax --workers 4 --out results/iteration_1/test.json
+uv run python bridge.py program runs/run_2/attempts/NNN --skills runs/run_2/library \
+    --split development --backend jax --workers 4 --out results/iteration_2/test.json
 ```
 
 What the test shows may change the setup, and the loop then trains again. Every iteration and its
@@ -135,7 +155,7 @@ refuses to write over the result of that run.
 | `a1_adm1.py` | The adapter: the benchmark's `Episode` as an environment of the loop |
 | `setup.json` | The goal, what the agents are told about the task, the observables, the seeds, the failure, the rules, the agents and the limits |
 | `checks.py` | The marks of the fixed milestones |
-| `programs/` | The open-loop baseline: three fixed pairs of rates from `TASK.md` |
+| `programs/` | Programs that read no sensor: three fixed pairs of rates from `TASK.md` and nine slow rises. The setup's baseline plays four of them |
 | `bridge.py` | A program as a controller of the benchmark's runner, for the test and the validation |
 | `results/` | The record: the baseline, every iteration and its test result |
 | `tests/` | The adapter and the bridge against the benchmark's code and the numbers of `TASK.md` |

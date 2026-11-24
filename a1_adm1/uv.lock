@@ -638,7 +638,7 @@ wheels = [
 
 [[package]]
 name = "soft-control-loop"
-version = "0.3.0"
+version = "0.4.0"
 source = { editable = "../../soft_control_loop" }
 
 [package.metadata]
