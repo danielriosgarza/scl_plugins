@@ -73,6 +73,8 @@ What the dollars of a run do not hold:
   counted at the input price.
 - `opus`, `sonnet` and `haiku` are names that Claude Code resolves to a model. The prices
   here hold only if they resolve to Opus 5.5, Sonnet 5.5 and Haiku 5.5 on the computer of the run.
+  Before run 1 the tool's own answers named `claude-opus-5-5`, `claude-sonnet-5-5` and
+  `claude-haiku-5-5` there (Claude Code 2.1.322).
 
 The dollars measure use at list prices. A subscription charges differently.
 
