@@ -325,11 +325,16 @@ What the dollars of a run do not hold:
 - Gemini 4 Carbon costs 4.00 and 20.00 from 2026-12-01. A run after that date needs the new
   prices.
 - Claude Haiku 5.5 costs 0.50 and 2.50 for a prompt of more than 100,000 tokens. The prompts of
-  a coding agent are far shorter.
+  a coding agent that answers once are far shorter. A session at a desk can grow beyond that,
+  and the loop still counts it at 0.10 and 0.50.
 - Claude Code writes part of a prompt to the cache at 1.25 times the input price. The loop counts
   those tokens at the input price.
-- The Antigravity tool reports no cached tokens, so all input of the three Gemini models is
-  counted at the input price.
+- Until soft_control_loop 0.7.0 the loop did not read the cached tokens that the Antigravity
+  tool reports, and counted the thinking of a Gemini model twice, so the Gemini dollars of run 1
+  and run 2 are not exact. From 0.7.0 the input that the tool read from its cache is counted
+  at the cached price. Gemini 4 Carbon has no cached price listed, so its cached input is
+  counted at the input price: in the test run of 2026-11-25 one session of it at a desk came
+  to 5 to 7 dollars, against 1 to 2 for the two other Gemini models.
 - `opus`, `sonnet` and `haiku` are names that Claude Code resolves to a model. The prices
   here hold only if they resolve to Opus 5.5, Sonnet 5.5 and Haiku 5.5 on the computer of the run.
   Before run 1 the tool's own answers named `claude-opus-5-5`, `claude-sonnet-5-5` and
