@@ -526,7 +526,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -588,7 +589,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -628,7 +630,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -690,7 +693,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -730,7 +734,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -792,7 +797,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -832,7 +838,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -894,7 +901,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -934,7 +942,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -996,7 +1005,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -1036,7 +1046,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -1098,7 +1109,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
@@ -1138,7 +1150,8 @@
        "settings.json",
        "jetski_state.pbtxt",
        "last_check.timestamp",
-       "updater"
+       "updater",
+       "antigravity-oauth-token"
       ],
       "~/.config/antigravity": [
        "credential-user-scope"
