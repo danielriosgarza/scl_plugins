@@ -278,6 +278,8 @@ options: 8 generations of 28 candidates on 8 of the 48 tuning episodes, 2 genera
 | Generation 10, on all 48 episodes | 7 of 28 failed an episode. The best without one: 14 673 |
 | Final | **14 672.7 with no failed episode of the 48** |
 | The values found, on the training seeds 6001 to 6100, each episode alone | **14 671.2, with 1 failed episode of 100** (seed 6061, a collapse after day 60) |
+| The second candidate of the final (14 565 on the 48 episodes), on the same 100 seeds | **14 601.0, no failed episode**. Seed 6061: 13 581, lowest pH 6.65 |
+| The third candidate of the final (14 486 on the 48 episodes), on the same 100 seeds | 14 520.8, no failed episode |
 
 What the check showed:
 
@@ -287,7 +289,9 @@ What the check showed:
   values that fail none of the 100 listed training seeds, at 14 434. The second gave values
   that score 14 671 and fail one. The loop plays tuned values on its evaluation seeds before it
   keeps them, and since soft_control_loop 0.6.0 it then tries the next best candidates of the
-  search's final before it falls back.
+  search's final before it falls back. Here the next best candidate costs 70 m3/d and fails no
+  episode, so the failure belonged to the exact values of the best candidate and not to the
+  region that the search had found.
 - Generations on 8 episodes cannot see a collapse that 1 episode in 48 has, and the best
   candidate on 8 episodes is the one closest to it. So the first form of the search ended with
   no finalist that the loop could keep. With `full_generations`, the last generations rank on
