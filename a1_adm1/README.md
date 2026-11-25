@@ -194,8 +194,8 @@ described in the README of soft_control_loop under "A round of independent coder
   starts a round only if there is room for one like the last. An answer that is on its way when
   the limit is reached is still paid, and with a round that works on all its attempts at once,
   up to 21 sessions can be on their way. The maintainer's limit for the test of the new round
-  is 200 dollars. Its first try was stopped after the first sessions and had used 24.60, so
-  the setup stops at 172. One session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
+  is 200 dollars, so the setup stops at 197. A first try of the test was stopped after its
+  first sessions and had used 24.60, which the limit does not include. One session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
   for `haiku`, 2.2 for `gemini-4-neon`, 1.3 for `gemini-4-hydrogen` and 5 to 7 for
   `gemini-4-carbon`, whose list price has no cached price. The tokens of a session that is
   stopped at its time are counted from the turns that its tool had printed; the log says
