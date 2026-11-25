@@ -188,13 +188,19 @@ described in the README of soft_control_loop under "A round of independent coder
   what the tool needs beside the desk: its own program to read, and of the folder of its sign-in
   only the named entries, so that no coding agent reads the sessions and the history that the
   tools keep there. A session at a desk may take 30 minutes, for every model: an attempt may
-  play 96 episodes, which is 6 plays of 16 at about 2.4 minutes each.
+  play 96 episodes, which is 6 plays of 16 at about 2.4 minutes each, and longer when many
+  desks play at once. Every result of a play tells the agent the minutes that it has left.
 - **Dollars.** The loop asks no agent once the dollars have reached `budgets.dollars`, and it
   starts a round only if there is room for one like the last. An answer that is on its way when
-  the limit is reached is still paid, so the setup stops at 97 for the maintainer's limit of
-  100 dollars. With a round that works on all its attempts at once, up to 21 sessions can be
-  on their way. The tokens of a session that is stopped at its time are not counted: the log
-  marks it, and what its tool had printed is kept in the folder `stopped` of the attempt.
+  the limit is reached is still paid, and with a round that works on all its attempts at once,
+  up to 21 sessions can be on their way. The maintainer's limit for the test of the new round
+  is 200 dollars. Its first try was stopped after the first sessions and had used 24.60, so
+  the setup stops at 172. One session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
+  for `haiku`, 2.2 for `gemini-4-neon`, 1.3 for `gemini-4-hydrogen` and 5 to 7 for
+  `gemini-4-carbon`, whose list price has no cached price. The tokens of a session that is
+  stopped at its time are counted from the turns that its tool had printed; the log says
+  `uncounted` when it had printed none, and the output is kept in the folder `stopped` of the
+  attempt.
 - **Prices** are the list prices of the providers on 2026-11-24, in dollars per million tokens of
   input, output and input read from the provider's cache. `results/README.md` gives the table
   with its sources. The dollars measure use at these prices. They are not what a subscription
