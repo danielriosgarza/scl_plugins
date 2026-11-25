@@ -178,19 +178,23 @@ described in the README of soft_control_loop under "A round of independent coder
   a round has 10 attempts (`explore` and `writers`). All are worked on at the same time. The
   coordinator chooses the strategies from any open subgoal and writes no guidance, and a coding
   agent reads its subgoal, its strategy and the skills, and nothing of another attempt. A
-  program may be revised 2 times. A run has at most 50 attempts, which is 5 rounds, and ends
-  after 3 rounds in a row without progress (`patience`).
+  program may be revised 2 times. The setup as it is here has 10 attempts, which is one round:
+  the maintainer chose on 2026-11-25 to test the new round once and to look at it before a
+  run of several rounds. Such a run ends after 3 rounds in a row without progress (`patience`).
 - **Skills.** The skill agent is offered every program of a round that broke no rule, the best
   first. A skill enters the library only if the program is clearly worse without it, and its
   measured effect is kept with it (`curate`).
 - **Where a coding agent works.** Its tool runs confined to its desk. `work` in the setup names
   what the tool needs beside the desk: its own program to read, and of the folder of its sign-in
   only the named entries, so that no coding agent reads the sessions and the history that the
-  tools keep there.
+  tools keep there. A session at a desk may take 30 minutes, for every model: an attempt may
+  play 96 episodes, which is 6 plays of 16 at about 2.4 minutes each.
 - **Dollars.** The loop asks no agent once the dollars have reached `budgets.dollars`, and it
   starts a round only if there is room for one like the last. An answer that is on its way when
-  the limit is reached is still paid, so a setup stops a little below the maintainer's limit.
-  The maintainer sets the limit of each run before it starts.
+  the limit is reached is still paid, so the setup stops at 97 for the maintainer's limit of
+  100 dollars. With a round that works on all its attempts at once, up to 21 sessions can be
+  on their way. The tokens of a session that is stopped at its time are not counted: the log
+  marks it, and what its tool had printed is kept in the folder `stopped` of the attempt.
 - **Prices** are the list prices of the providers on 2026-11-24, in dollars per million tokens of
   input, output and input read from the provider's cache. `results/README.md` gives the table
   with its sources. The dollars measure use at these prices. They are not what a subscription

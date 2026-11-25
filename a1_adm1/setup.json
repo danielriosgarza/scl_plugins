@@ -413,7 +413,7 @@
  ],
  "budgets": {
   "dollars": 97,
-  "attempts": 50,
+  "attempts": 10,
   "episodes": 80,
   "max_steps": null
  },
@@ -475,7 +475,7 @@
     "timeout": 600,
     "pair": "write",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.npm-global/bin",
       "~/.npm-global/lib/node_modules/@openai/codex"
@@ -542,7 +542,7 @@
     "timeout": 600,
     "pair": "write",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.local/bin/claude",
       "~/.local/share/claude/versions"
@@ -646,7 +646,7 @@
     "timeout": 600,
     "pair": "write",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.local/bin/claude",
       "~/.local/share/claude/versions"
@@ -750,7 +750,7 @@
     "timeout": 600,
     "pair": "write",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.local/bin/claude",
       "~/.local/share/claude/versions"
@@ -854,7 +854,7 @@
     "timeout": 600,
     "pair": "review",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.local/bin/claude",
       "~/.local/share/claude/versions"
@@ -958,7 +958,7 @@
     "timeout": 600,
     "pair": "review",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.local/bin/claude",
       "~/.local/share/claude/versions"
@@ -1062,7 +1062,7 @@
     "timeout": 600,
     "pair": "review",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.local/bin/claude",
       "~/.local/share/claude/versions"
@@ -1166,7 +1166,7 @@
     "timeout": 600,
     "pair": "review",
     "work": {
-     "minutes": 10,
+     "minutes": 30,
      "read": [
       "~/.npm-global/bin",
       "~/.npm-global/lib/node_modules/@openai/codex"
