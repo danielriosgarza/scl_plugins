@@ -246,6 +246,42 @@ No agent sees this program or its ten numbers. It is in no file of the plugin: t
 `test_the_benchmarks_own_pi_controller_scores_in_the_plugin_what_its_scorecard_says` builds it
 from microbesGYM's record when it runs, and compares two training episodes.
 
+## The loop's search on the ten numbers of two loops of feedback (2026-11-25)
+
+After round 1 of run 2 the search of soft_control_loop was rebuilt (`iteration_2/README.md`,
+"A third review"). This check asks what the rebuilt search makes of a program whose form is
+known to be good and whose numbers are bad. It asks no agent and costs no dollars.
+
+`programs/search_check` has the form of the benchmark's PI controller. Its ten numbers are
+declared at the middle of the ranges of the benchmark's own search, and with them every one of
+the 48 tuning episodes collapses. The search plays training episodes only, in the engine's
+lanes.
+
+| Stage | Episodes | Result |
+|---|---|---|
+| 12 generations of 30 candidates, each on 8 of the 48 tuning episodes | 2880 | The best candidate of a generation rose from 7715 to between 13 790 and 16 369 from generation 6 on |
+| Final on all 48 tuning episodes | 240 | A mean of 14 515, but each of the five finalists failed 1 or 2 of the 48 episodes |
+| 2 generations of 20 candidates on all 48 tuning episodes | 1920 | No clean candidate at the start. 1 of 20 in the first generation and 6 of 20 in the second failed no episode. The best: 14 394 |
+| The values found, on the training seeds 6001 to 6100, each episode alone | 100 | **14 434.2, no failed episode** |
+
+The benchmark's PI controller scores 14 953.0 on the same 100 seeds, after a search of 21 200
+training episodes. The best program of round 1 of run 2 scored 11 253 on its evaluation seeds.
+
+What the check showed:
+
+- The search finds the level of the benchmark's controller in a quarter of the episodes, from
+  numbers that collapse every digester.
+- Generations on 8 episodes cannot see a collapse that 1 episode in 48 has, and the best
+  candidate on 8 episodes is the one closest to it. So the first form of the search ended with
+  no finalist that the loop could keep. With `full_generations`, the last generations rank on
+  all the tuning seeds, and the search moves to where no episode fails. The benchmark's own
+  search ends in the same way, with 4 generations on all 100 training seeds.
+- The first two stages ran here before `full_generations` existed, and the third stage
+  continued them by hand with the same rule.
+
+No agent sees this program, its form or these numbers. No test seed and no validation seed was
+played.
+
 ## Prices (2026-11-24)
 
 The loop counts the dollars of a run from list prices, in dollars per million tokens. These are
