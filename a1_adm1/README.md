@@ -61,8 +61,9 @@ stated together with this fact, as the benchmark asks of a training that reads t
   the memory, and the observation as the only source. An attempt that breaks one is barred.
 - **Milestones** are marks on the mean score with no failed episode (`checks.py`). The first is
   what the fixed rates 200 and 100 m3/d score on the evaluation seeds, and the others are every
-  1000 m3/d from 10 000 to 17 000. Results of other controllers set no mark and are not shown to
-  the agents.
+  1000 m3/d from 10 000 to 50 000, a ladder that the maintainer fixed. It ends far above what
+  any program has scored, so a run always has a mark ahead. Results of other controllers set no
+  mark and are not shown to the agents.
 - **What the agents are told.** The challenge, the tools and what may be tuned, and nothing
   else. The description in the setup is the task's own document in short: the digester, the aim,
   the two pumps and their limits, the three feeds, what differs between episodes, the nine

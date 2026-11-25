@@ -8,8 +8,9 @@ together, so it passes or fails as a whole whatever the setup's pass rate.
 
 The first mark is BASE: what the fixed rates 200 and 100 m3/d (programs/hold_200_100) scored on
 the evaluation seeds 6021 to 6100, with no failed episode (results/README.md). The further marks
-are every 1000 m3/d from 10 000 to 17 000. Results of other controllers of the benchmark set no
-mark.
+are every 1000 m3/d from 10 000 to 50 000, a ladder that the maintainer fixed and that ends
+far above what any program has scored, so that a run never meets its last mark. Results of
+other controllers of the benchmark set no mark.
 
 This module defines BASE; mark, which returns the check of one mark; and one check for each fixed
 milestone of the setup.
@@ -41,3 +42,36 @@ check_reach_14000 = mark(14000)
 check_reach_15000 = mark(15000)
 check_reach_16000 = mark(16000)
 check_reach_17000 = mark(17000)
+check_reach_18000 = mark(18000)
+check_reach_19000 = mark(19000)
+check_reach_20000 = mark(20000)
+check_reach_21000 = mark(21000)
+check_reach_22000 = mark(22000)
+check_reach_23000 = mark(23000)
+check_reach_24000 = mark(24000)
+check_reach_25000 = mark(25000)
+check_reach_26000 = mark(26000)
+check_reach_27000 = mark(27000)
+check_reach_28000 = mark(28000)
+check_reach_29000 = mark(29000)
+check_reach_30000 = mark(30000)
+check_reach_31000 = mark(31000)
+check_reach_32000 = mark(32000)
+check_reach_33000 = mark(33000)
+check_reach_34000 = mark(34000)
+check_reach_35000 = mark(35000)
+check_reach_36000 = mark(36000)
+check_reach_37000 = mark(37000)
+check_reach_38000 = mark(38000)
+check_reach_39000 = mark(39000)
+check_reach_40000 = mark(40000)
+check_reach_41000 = mark(41000)
+check_reach_42000 = mark(42000)
+check_reach_43000 = mark(43000)
+check_reach_44000 = mark(44000)
+check_reach_45000 = mark(45000)
+check_reach_46000 = mark(46000)
+check_reach_47000 = mark(47000)
+check_reach_48000 = mark(48000)
+check_reach_49000 = mark(49000)
+check_reach_50000 = mark(50000)
