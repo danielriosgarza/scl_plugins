@@ -183,9 +183,10 @@ described in the README of soft_control_loop under "A round of independent coder
   a round has 10 attempts (`explore` and `writers`). All are worked on at the same time. The
   coordinator chooses the strategies from any open subgoal and writes no guidance, and a coding
   agent reads its subgoal, its strategy and the skills, and nothing of another attempt. A
-  program may be revised 2 times. The setup as it is here has 10 attempts, which is one round:
-  the maintainer chose on 2026-11-25 to test the new round once and to look at it before a
-  run of several rounds. Such a run ends after 3 rounds in a row without progress (`patience`).
+  program may be revised 2 times. The maintainer chose on 2026-11-25 to test the new round
+  once, with 10 attempts in the setup. When that round had run without an error he let the
+  same run go on, so the setup now has 50 attempts and the dollars decide how many rounds
+  are played. A run ends after 3 rounds in a row without progress (`patience`).
 - **Skills.** The skill agent is offered every program of a round that broke no rule, the best
   first. A skill enters the library only if the program is clearly worse without it, and its
   measured effect is kept with it (`curate`).
@@ -199,8 +200,11 @@ described in the README of soft_control_loop under "A round of independent coder
   starts a round only if there is room for one like the last. An answer that is on its way when
   the limit is reached is still paid, and with a round that works on all its attempts at once,
   up to 21 sessions can be on their way. The maintainer's limit for the test of the new round
-  is 200 dollars, so the setup stops at 197. A first try of the test was stopped after its
-  first sessions and had used 24.60, which the limit does not include. One session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
+  was 200 dollars, so the setup stopped at 197. Two tries of the test were stopped and had
+  used 44.61, which the limit does not include. The round of the third try came to about 150
+  dollars, of which about 140 were for the Gemini models, and the maintainer then raised the
+  limit to 500 dollars as long as the dollars are those of the Gemini models. The setup stops
+  at 480. One session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
   for `haiku`, 2.2 for `gemini-4-neon`, 1.3 for `gemini-4-hydrogen` and 5 to 7 for
   `gemini-4-carbon`, whose list price has no cached price. The tokens of a session that is
   stopped at its time are counted from the turns that its tool had printed; the log says
