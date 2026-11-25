@@ -476,8 +476,22 @@
     "pair": "write",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.npm-global/bin",
+      "~/.npm-global/lib/node_modules/@openai/codex"
+     ],
+     "write": [
+      "~/.codex"
+     ],
+     "only": {
+      "~/.codex": [
+       "auth.json",
+       "auth.json.lock",
+       "auth.lock",
+       "installation_id",
+       "version.json"
+      ]
+     }
     }
    },
    {
@@ -488,8 +502,36 @@
     "pair": "write",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -500,8 +542,18 @@
     "pair": "write",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/claude",
+      "~/.local/share/claude/versions"
+     ],
+     "write": [
+      "~/.claude"
+     ],
+     "only": {
+      "~/.claude": [
+       ".credentials.json"
+      ]
+     }
     }
    },
    {
@@ -512,8 +564,36 @@
     "pair": "write",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -524,8 +604,36 @@
     "pair": "write",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -536,8 +644,18 @@
     "pair": "write",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/claude",
+      "~/.local/share/claude/versions"
+     ],
+     "write": [
+      "~/.claude"
+     ],
+     "only": {
+      "~/.claude": [
+       ".credentials.json"
+      ]
+     }
     }
    },
    {
@@ -548,8 +666,36 @@
     "pair": "write",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -560,8 +706,36 @@
     "pair": "write",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -572,8 +746,18 @@
     "pair": "write",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/claude",
+      "~/.local/share/claude/versions"
+     ],
+     "write": [
+      "~/.claude"
+     ],
+     "only": {
+      "~/.claude": [
+       ".credentials.json"
+      ]
+     }
     }
    },
    {
@@ -584,8 +768,36 @@
     "pair": "write",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -596,8 +808,36 @@
     "pair": "review",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -608,8 +848,18 @@
     "pair": "review",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/claude",
+      "~/.local/share/claude/versions"
+     ],
+     "write": [
+      "~/.claude"
+     ],
+     "only": {
+      "~/.claude": [
+       ".credentials.json"
+      ]
+     }
     }
    },
    {
@@ -620,8 +870,36 @@
     "pair": "review",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -632,8 +910,36 @@
     "pair": "review",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -644,8 +950,18 @@
     "pair": "review",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/claude",
+      "~/.local/share/claude/versions"
+     ],
+     "write": [
+      "~/.claude"
+     ],
+     "only": {
+      "~/.claude": [
+       ".credentials.json"
+      ]
+     }
     }
    },
    {
@@ -656,8 +972,36 @@
     "pair": "review",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -668,8 +1012,36 @@
     "pair": "review",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -680,8 +1052,18 @@
     "pair": "review",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/claude",
+      "~/.local/share/claude/versions"
+     ],
+     "write": [
+      "~/.claude"
+     ],
+     "only": {
+      "~/.claude": [
+       ".credentials.json"
+      ]
+     }
     }
    },
    {
@@ -692,8 +1074,36 @@
     "pair": "review",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -704,8 +1114,36 @@
     "pair": "review",
     "work": {
      "minutes": 30,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.local/bin/agy"
+     ],
+     "write": [
+      "~/.gemini",
+      "~/.gemini/antigravity-cli",
+      "~/.config/antigravity"
+     ],
+     "only": {
+      "~/.gemini": [
+       "oauth_creds.json",
+       "google_accounts.json",
+       "installation_id",
+       "settings.json",
+       "state.json",
+       "trustedFolders.json",
+       "projects.json",
+       "antigravity-cli"
+      ],
+      "~/.gemini/antigravity-cli": [
+       "installation_id",
+       "settings.json",
+       "jetski_state.pbtxt",
+       "last_check.timestamp",
+       "updater"
+      ],
+      "~/.config/antigravity": [
+       "credential-user-scope"
+      ]
+     }
     }
    },
    {
@@ -716,8 +1154,22 @@
     "pair": "review",
     "work": {
      "minutes": 10,
-     "read": [],
-     "write": []
+     "read": [
+      "~/.npm-global/bin",
+      "~/.npm-global/lib/node_modules/@openai/codex"
+     ],
+     "write": [
+      "~/.codex"
+     ],
+     "only": {
+      "~/.codex": [
+       "auth.json",
+       "auth.json.lock",
+       "auth.lock",
+       "installation_id",
+       "version.json"
+      ]
+     }
     }
    }
   ],
