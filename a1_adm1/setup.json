@@ -323,9 +323,10 @@
    31047,
    31048
   ],
-  "candidates": 28,
-  "generations": 8,
+  "candidates": 24,
+  "generations": 6,
   "generation_seeds": 8,
+  "full_generations": 2,
   "constants": 10,
   "lanes": 16
  },

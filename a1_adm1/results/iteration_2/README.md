@@ -158,8 +158,26 @@ was spent. Three more causes were found, all in soft_control_loop, and 0.6.0 cha
 |---|---|---|---|
 | soft_control_loop | 0.5.0 | 0.6.0 | Causes 8 to 10 |
 | What the agents are told about ranges | Safe at both ends | As wide as the constant keeps its meaning, up to the limits of the pumps where it is a rate. The search and its rank find what is safe. The rates of the task's trials are no limits for a program that reads its sensors | Cause 8 |
-| Search of the constants | One constant at a time, at most 9 candidates x 6 generations on 16 seeds | Candidates drawn across all ranges around the best of the generation before: 28 candidates x 8 generations, each on 8 of the 48 seeds 31001 to 31048, and a final on all 48 | Cause 9 |
-| How a search plays its episodes | One at a time in each process | 16 side by side in each process, in the engine's lanes | Cause 10 |
+| Search of the constants | One constant at a time, at most 9 candidates x 6 generations on 16 seeds | Candidates drawn across all ranges around the best of the generation before: 24 candidates x 6 generations, the first 4 each on 8 of the 48 seeds 31001 to 31048 and the last 2 on all 48, and a final on all 48 | Cause 9, and cause 11 below |
+| How a search plays its episodes | One at a time in each process, and new processes for every generation | Up to 16 side by side in each process, in the engine's lanes, and the processes live for the whole search | Cause 10 |
 | Revise | Not set | 2, the maintainer's choice. A coding agent reads the episodes of its program with the values it declared and may write it again, before the search | Cause 10 |
+
+Two more things were found while the rebuilt search was checked at no dollars on a program
+written by hand (`../README.md`, "The loop's search on the ten numbers of two loops of
+feedback"):
+
+11. **Generations on a few episodes end at the edge of a collapse.** A search with every
+    generation on 8 of 48 episodes reached a mean of 14 515, and each of its finalists failed 1
+    or 2 of the 48 episodes. The loop would have kept none. With `full_generations`, the last
+    generations rank on all the tuning seeds, and the same search then gave 14 434 with no
+    failed episode on the 100 listed training seeds.
+12. **Every generation started its processes again**, and each compiled the model again. The
+    processes now live for a whole search and a whole run.
+
+**What a search costs now.** On the 14 cores that play the runs, a generation of 28 candidates
+on 8 episodes took 6 to 7.5 minutes and one on all 48 episodes 26 to 32 minutes. The setup's
+search, 4 generations of 24 candidates on 8 episodes and 2 on all 48, takes about 75 minutes.
+With the evaluations, an attempt takes about an hour and a half, and a round of 5 attempts
+about 8 hours.
 
 No test seed and no validation seed was played.

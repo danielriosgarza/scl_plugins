@@ -77,12 +77,14 @@ stated together with this fact, as the benchmark asks of a training that reads t
   24, 32, 40, 48, 64, 80, 160, 240 and 400 (`phases` in the setup), so the first 12 days are
   shown in parts of 2 days. Equal parts of 71 decisions would hide a collapse, which takes days.
 - **Tuning.** A program may declare up to 10 of its numbers as constants with a range. The loop
-  then searches the values on 48 training episodes that no agent sees: 8 generations of 28
+  then searches the values on 48 training episodes that no agent sees: 6 generations of 24
   candidates, each drawn across the whole of its ranges around the best of the generation
-  before, each generation on 8 of the 48 episodes, and a final on all 48. It keeps the values of
-  the search if the program ranks better with them on the evaluation seeds (`tuning` in the
-  setup, and the README of soft_control_loop). No agent is asked, so a search costs computer
-  time and no dollars. The description tells a coding agent that the range of a constant is as
+  before. The first 4 generations each rank on 8 of the 48 episodes. The last 2 rank on all 48,
+  because 8 episodes cannot show a collapse that 1 digester in 48 has, and a final on all 48
+  decides. The loop keeps the values of the search if the program ranks better with them on
+  the evaluation seeds (`tuning` in the setup, and the README of soft_control_loop). No agent
+  is asked, so a search costs computer time and no dollars: about 75 minutes on the 14 cores
+  that play the runs. The description tells a coding agent that the range of a constant is as
   wide as the constant keeps its meaning, because the search and not the range finds which
   values are safe.
 - **Engine.** Every episode of the loop runs on the engine's backend `jax`, in child processes
