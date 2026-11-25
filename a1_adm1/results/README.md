@@ -267,10 +267,27 @@ lanes.
 The benchmark's PI controller scores 14 953.0 on the same 100 seeds, after a search of 21 200
 training episodes. The best program of round 1 of run 2 scored 11 253 on its evaluation seeds.
 
+The same search then ran in one piece on the 14 cores that play the runs, with the setup's
+options: 8 generations of 28 candidates on 8 of the 48 tuning episodes, 2 generations on all
+48, and the final. It played 4528 episodes in 1 hour and 55 minutes.
+
+| Stage | Result |
+|---|---|
+| Generations 1 to 8, each on 8 episodes | The best candidate without a failed episode rose from 7350 to between 15 338 and 15 985 from generation 6 on |
+| Generation 9, on all 48 episodes | 15 of 28 candidates failed an episode. The best without one: 14 486 |
+| Generation 10, on all 48 episodes | 7 of 28 failed an episode. The best without one: 14 673 |
+| Final | **14 672.7 with no failed episode of the 48** |
+| The values found, on the training seeds 6001 to 6100, each episode alone | **14 671.2, with 1 failed episode of 100** (seed 6061, a collapse after day 60) |
+
 What the check showed:
 
 - The search finds the level of the benchmark's controller in a quarter of the episodes, from
   numbers that collapse every digester.
+- No failed episode among 48 does not make 100 other episodes safe. The first search gave
+  values that fail none of the 100 listed training seeds, at 14 434. The second gave values
+  that score 14 671 and fail one. The loop plays tuned values on its evaluation seeds before it
+  keeps them, and since soft_control_loop 0.6.0 it then tries the next best candidates of the
+  search's final before it falls back.
 - Generations on 8 episodes cannot see a collapse that 1 episode in 48 has, and the best
   candidate on 8 episodes is the one closest to it. So the first form of the search ended with
   no finalist that the loop could keep. With `full_generations`, the last generations rank on
