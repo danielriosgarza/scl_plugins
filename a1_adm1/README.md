@@ -101,6 +101,11 @@ stated together with this fact, as the benchmark asks of a training that reads t
   that each play one episode after another (`"reuse": true`), so the model is compiled once per
   child. An episode then takes about 11 s of one processor core. On the backend `reference` it
   takes about 27 s, and the scores differ by less than 0.001 m3/d.
+  Every child holds itself to one processor (`"pin": true`). Without that a child of the
+  engine starts 98 threads on the 14 processors of the computer of the runs. Measured there on
+  2026-11-25 with about 9.5 processors free: 14 children played 16.9 episodes a minute without
+  `pin` and 33.8 with it, and in batches of 16 lanes 56.7 and 83.6, with the same scores to
+  every digit. `OMP_NUM_THREADS=1` and the flags of XLA for one thread changed no time.
 - **Lanes.** A search plays the episodes of a candidate side by side, 16 in one call of the
   engine (`Loading.lanes`, and `"lanes": 16` in the setup). On 4 cores that is 1.5 s for an
   episode in place of 4.4 s. Lane 0 plays the episode of its seed, to 12 digits the same as
