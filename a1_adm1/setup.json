@@ -328,6 +328,46 @@
   "generation_seeds": 8,
   "full_generations": 2,
   "constants": 10,
+  "lanes": 16,
+  "best": 4
+ },
+ "experiments": {
+  "seeds": [
+   32001,
+   32002,
+   32003,
+   32004,
+   32005,
+   32006,
+   32007,
+   32008,
+   32009,
+   32010,
+   32011,
+   32012,
+   32013,
+   32014,
+   32015,
+   32016,
+   32017,
+   32018,
+   32019,
+   32020,
+   32021,
+   32022,
+   32023,
+   32024,
+   32025,
+   32026,
+   32027,
+   32028,
+   32029,
+   32030,
+   32031,
+   32032
+  ],
+  "episodes": 96,
+  "each": 16,
   "lanes": 16
  },
  "phases": [
@@ -346,6 +386,14 @@
   568
  ],
  "revise": 2,
+ "together": true,
+ "writers": 2,
+ "independent": true,
+ "start": "mix",
+ "pairs": true,
+ "curate": {
+  "most": 3
+ },
  "pass_rate": 1.0,
  "score": "net_methane",
  "failure": "failed",
@@ -421,42 +469,258 @@
   },
   "coders": [
    {
-    "backend": "agy",
-    "model": "gemini-4-neon",
-    "effort": "high",
-    "timeout": 1800
-   },
-   {
     "backend": "codex",
     "model": "gpt-6.2-astra",
     "effort": "medium",
-    "timeout": 600
+    "timeout": 600,
+    "pair": "write",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
    },
    {
     "backend": "agy",
-    "model": "gemini-4-carbon",
+    "model": "gemini-4-neon",
     "effort": "high",
-    "timeout": 1800
+    "timeout": 1800,
+    "pair": "write",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
    },
    {
     "backend": "claude",
     "model": "haiku",
     "effort": "medium",
-    "timeout": 600
+    "timeout": 600,
+    "pair": "write",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-carbon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "write",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
    },
    {
     "backend": "agy",
     "model": "gemini-4-hydrogen",
     "effort": "high",
-    "timeout": 1800
+    "timeout": 1800,
+    "pair": "write",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "claude",
+    "model": "haiku",
+    "effort": "medium",
+    "timeout": 600,
+    "pair": "write",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-neon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "write",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-carbon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "write",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "claude",
+    "model": "haiku",
+    "effort": "medium",
+    "timeout": 600,
+    "pair": "write",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-hydrogen",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "write",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-neon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "review",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "claude",
+    "model": "haiku",
+    "effort": "medium",
+    "timeout": 600,
+    "pair": "review",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-carbon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "review",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-hydrogen",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "review",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "claude",
+    "model": "haiku",
+    "effort": "medium",
+    "timeout": 600,
+    "pair": "review",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-neon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "review",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-carbon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "review",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "claude",
+    "model": "haiku",
+    "effort": "medium",
+    "timeout": 600,
+    "pair": "review",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-hydrogen",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "review",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "agy",
+    "model": "gemini-4-neon",
+    "effort": "high",
+    "timeout": 1800,
+    "pair": "review",
+    "work": {
+     "minutes": 30,
+     "read": [],
+     "write": []
+    }
+   },
+   {
+    "backend": "codex",
+    "model": "gpt-6.2-astra",
+    "effort": "medium",
+    "timeout": 600,
+    "pair": "review",
+    "work": {
+     "minutes": 10,
+     "read": [],
+     "write": []
+    }
    }
   ],
-  "reviewer": {
-   "backend": "claude",
-   "model": "sonnet",
-   "effort": "high",
-   "timeout": 600
-  },
   "skill_agent": {
    "backend": "claude",
    "model": "opus",
