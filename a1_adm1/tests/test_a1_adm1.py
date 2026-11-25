@@ -110,7 +110,7 @@ def test_the_sludge_of_an_episode_is_that_of_the_recipe_of_the_sludge_pump(env):
     # that the plugin reports to the nominal recipe, 5, 20 and 5 kgCOD/m3, which the sludge pump
     # delivers, and shows that another seed gives another sludge.
     env.reset(6001)
-    first, defaults = env._drawn(), env._defaults
+    first, defaults = env._drawn(), env._engine._defaults
     theta = np.asarray(env._episode._env.state.theta, dtype=float)
     drawn = np.flatnonzero(theta != defaults)
     nominal, storm, weekend = defaults[drawn[:3]], defaults[drawn[3:6]], defaults[drawn[6:]]
@@ -246,6 +246,49 @@ def test_fixed_rates_give_the_scores_of_task_md():
         assert final["net_methane"] == pytest.approx(
             0.2 * final["net_methane_start"] + 0.4 * final["net_methane_middle"]
             + 0.4 * final["net_methane_end"], rel=1e-9)
+
+
+@pytest.mark.slow
+def test_lane_0_plays_the_episode_of_its_seed_and_the_other_lanes_play_other_ones():
+    # The loop plays the episodes of its searches in the lanes of the engine. A lane must give
+    # what one episode gives, to the last digit that the solver repeats, or a search would
+    # rank candidates on something else than the task. TASK.md gives 8768 for the seed 6001
+    # at the fixed rates 200 and 100.
+    env = a1_adm1.Loading(backend="jax")
+    alone = runtime.run_episode(env, load_program(HOLD), 6001, OBSERVABLES, hidden=HIDDEN)
+    side = runtime.run_side_by_side(env, [load_program(HOLD) for _ in range(3)],
+                                    [6001, 6002, 6001], OBSERVABLES, hidden=HIDDEN)
+    first = side[0]
+    assert [len(trace.steps) for trace in side] == [568, 568, 568]
+    assert all(trace.failure is None and trace.steps[-1].truncated for trace in side)
+    for one, other in zip(alone.steps, first.steps):
+        assert one.action == other.action and one.reward == pytest.approx(other.reward, rel=1e-9)
+        for key in OBSERVABLES + HIDDEN:
+            mine, theirs = one.observation[key], other.observation[key]
+            assert (mine is None) == (theirs is None), key
+            if isinstance(mine, float):
+                assert mine == pytest.approx(theirs, rel=1e-9, abs=1e-12), key
+    for key, value in alone.final_observation.items():
+        assert first.final_observation[key] == pytest.approx(value, rel=1e-9), key
+    assert first.final_observation["net_methane"] == pytest.approx(8768.0, abs=0.5)
+    assert first.final_observation["failed"] is False
+    sludges = [trace.final_observation["sludge_proteins"] for trace in side]
+    assert len({round(value, 6) for value in sludges}) == 3
+    assert all(0.7 <= value <= 1.4 for value in sludges)
+    scores = [trace.final_observation["net_methane"] for trace in side]
+    assert scores[1] != pytest.approx(9654.0, abs=5.0) and scores[2] != pytest.approx(scores[0])
+
+
+def test_lanes_play_training_episodes_only_and_on_the_backend_jax(env):
+    # A search must not see a test or a validation episode, in lanes as in one episode.
+    with pytest.raises(ValueError, match="lanes run on the backend jax"):
+        env.lanes(2)
+    lanes = a1_adm1.Lanes(a1_adm1.load_task(), 2)
+    for seed, split in ((7001, "development"), (12050, "final")):
+        with pytest.raises(ValueError, match=f"a seed of the split {split}"):
+            lanes.reset([6001, seed])
+    with pytest.raises(ValueError, match="2 lanes need 2 seeds"):
+        lanes.reset([6001])
 
 
 PI_PROGRAM = '''import math

@@ -77,13 +77,27 @@ stated together with this fact, as the benchmark asks of a training that reads t
   24, 32, 40, 48, 64, 80, 160, 240 and 400 (`phases` in the setup), so the first 12 days are
   shown in parts of 2 days. Equal parts of 71 decisions would hide a collapse, which takes days.
 - **Tuning.** A program may declare up to 10 of its numbers as constants with a range. The loop
-  then searches better values on 16 training episodes that no agent sees, and keeps them if the
-  program ranks better with them on the evaluation seeds (`tuning` in the setup, and the README
-  of soft_control_loop). No agent is asked, so a search costs computer time and no dollars.
+  then searches the values on 48 training episodes that no agent sees: 6 generations of 24
+  candidates, each drawn across the whole of its ranges around the best of the generation
+  before. The first 4 generations each rank on 8 of the 48 episodes. The last 2 rank on all 48,
+  because 8 episodes cannot show a collapse that 1 digester in 48 has, and a final on all 48
+  decides. The loop keeps the values of the search if the program ranks better with them on
+  the evaluation seeds (`tuning` in the setup, and the README of soft_control_loop). No agent
+  is asked, so a search costs computer time and no dollars: about 75 minutes on the 14 cores
+  that play the runs. The description tells a coding agent that the range of a constant is as
+  wide as the constant keeps its meaning, because the search and not the range finds which
+  values are safe.
 - **Engine.** Every episode of the loop runs on the engine's backend `jax`, in child processes
   that each play one episode after another (`"reuse": true`), so the model is compiled once per
   child. An episode then takes about 11 s of one processor core. On the backend `reference` it
   takes about 27 s, and the scores differ by less than 0.001 m3/d.
+- **Lanes.** A search plays the episodes of a candidate side by side, 16 in one call of the
+  engine (`Loading.lanes`, and `"lanes": 16` in the setup). On 4 cores that is 1.5 s for an
+  episode in place of 4.4 s. Lane 0 plays the episode of its seed, to 12 digits the same as
+  alone. Every other lane plays another training episode, which the engine draws from the seed
+  and the number of the lane. So a tuning seed stands for a fixed group of training episodes,
+  the same for every candidate. The benchmark's own trainings play their episodes this way
+  (`BatchEpisodes`). Lanes refuse a development or a final seed, as a single episode does.
 - **Reward.** The reward of a decision is its true net methane, the number that the score
   averages. The benchmark provides it for trainings. No program sees it.
 
@@ -96,7 +110,7 @@ microbesGYM has one rule for seeds: train, test, validate.
 | Baseline | 6001 to 6020 | training | The agents |
 | Debug | 6001, 6002 | training | The coding agent |
 | Evaluation | 6021 to 6100 | training | The agents |
-| Tuning | 31001 to 31016 | training | No agent. The loop searches the constants of a program here |
+| Tuning | 31001 to 31048 | training | No agent. The loop searches the constants of a program here |
 | Selection | 30001 to 30100 | training | No agent. The loop picks its winner here |
 | Test | 7001 to 7050 | development | A person, after a run has ended, with `bridge.py` |
 | Validation | 12001 to 12050 | final | Nobody until the maintainer says so. Then once |
@@ -183,7 +197,7 @@ refuses to write over the result of that run.
 | `a1_adm1.py` | The adapter: the benchmark's `Episode` as an environment of the loop |
 | `setup.json` | The goal, what the agents are told about the task, the observables, the seeds, the failure, the rules, the agents and the limits |
 | `checks.py` | The marks of the fixed milestones |
-| `programs/` | Programs that read no sensor: three fixed pairs of rates from `TASK.md`, nine rises of both pumps together and five starts without sludge. The setup's baseline plays the three fixed pairs; the others are a record of experiments (`results/README.md`) and are not shown to the agents |
+| `programs/` | Programs that read no sensor: three fixed pairs of rates from `TASK.md`, nine rises of both pumps together and five starts without sludge. The setup's baseline plays the three fixed pairs; the others are a record of experiments (`results/README.md`) and are not shown to the agents. `programs/search_check` is a check of the loop's search, written by hand, with ten numbers left to the search (its docstring, and `scl tune`); it is not shown to the agents either |
 | `bridge.py` | A program as a controller of the benchmark's runner, for the test and the validation |
 | `results/` | The record: the baseline, every iteration and its test result |
 | `tests/` | The adapter and the bridge against the benchmark's code and the numbers of `TASK.md` |
