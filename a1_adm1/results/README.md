@@ -303,6 +303,56 @@ What the check showed:
 No agent sees this program, its form or these numbers. No test seed and no validation seed was
 played.
 
+## Two tries of the round of run 3 (2026-11-25)
+
+Before run 3, its round was tried twice on the computer of the runs: 5 strategies with 2
+writers each, 21 sessions of coding agents at desks of 30 minutes, 2 revisions. Both tries were
+stopped before the round was over, and no program of them is selected or searched. They are no
+iteration. Their folders `runs/test_a` and `runs/test_b` stay on that computer. What each one
+showed is changed in soft_control_loop 0.7.0.
+
+| Try | Limit in dollars | Stopped | Dollars at list prices | What it showed |
+|---|---:|---|---:|---|
+| A | 100 | After the first sessions, when six sessions of the Gemini models reached their 30 minutes | 24.60 | No agent knew how much of its session was left: six of ten were still experimenting when their tools were stopped. The loop counted those six sessions as 0 dollars, and they had used 19.49. The tokens of the Antigravity tool were counted wrongly. |
+| B | 200 | After the first versions and part of the first revisions, by the maintainer's decision | 20.01 | The engine's processes waited on each other. An evaluation of 80 episodes held all 14 processors until it was over, and took 5 to 6 minutes alone and 20 to 29 minutes when 5 to 7 ran. A play of 16 episodes for a desk took 147 s alone and 100 to 640 s in the round, and three critics played nothing. A critic that was cut off was followed by another whole session. |
+
+In try B every agent was told the minutes left with each play. All ten asked for them, and
+seven of ten handed in before their time. The first versions of try B on the 80 evaluation
+episodes, against 9277.5 for the fixed rates of the baseline:
+
+| Attempt | Model | Mean score | Failed of 80 |
+|---:|---|---:|---:|
+| 7 | gemini-4-neon | 13212.4 | 1 |
+| 1 | gpt-6.2-astra | 13085.1 | 0 |
+| 8 | gemini-4-carbon | 12392.1 | 0 |
+| 10 | gemini-4-hydrogen | 12188.0 | 1 |
+| 2 | gemini-4-neon | 11815.3 | 0 |
+| 4 | gemini-4-carbon | 10168.2 | 7 |
+| 3, 5, 6, 9 | haiku | 9204 to 9280 | 0 |
+
+**The processors.** A process of the engine on JAX starts threads for every processor that it
+may use: 98 threads in a process on 14 processors, 1372 in the 14 processes of the loop.
+Measured on that computer after try B, with nothing else of the loop running and about 9.5
+processors free, fixed rates of 200 and 100 m3/d, training seeds from 34001:
+
+| Played | Each process free | Each process on one processor |
+|---|---:|---:|
+| Second episode of one process | 15.9 s | 9.5 s |
+| 14 processes, 3 single episodes each | 149 s, 16.9 episodes a minute | 74.5 s, 33.8 episodes a minute |
+| One batch of 16 lanes in one process | 124.5 s | 107.8 s |
+| 14 processes, one batch of 16 lanes each | 237 s, 56.7 episodes a minute | 161 s, 83.6 episodes a minute |
+
+The scores were equal to every digit. `OMP_NUM_THREADS=1`, `OPENBLAS_NUM_THREADS=1` and the
+flags of XLA for one thread changed no time. The setup now has `"pin": true`. With all 14
+processors free, the loop's own code then played 80 single episodes of one program in 95.9 s,
+50 episodes a minute, while a batch of 16 lanes went on beside them.
+
+**The GPU.** The engine with `jax[cuda13]` on the GPU of that computer gave the scores of the
+CPU to 13 digits and was slower: a first batch of 16 lanes took 494.8 s, 30.9 s an episode, and
+one of 64 lanes 649.1 s, 10.1 s an episode, each with about 25 s to compile. 14 processes on the
+CPU, each on one processor with 16 lanes, come to 0.72 s an episode. Batches of 256 and 1024
+lanes were not measured.
+
 ## Prices (2026-11-24)
 
 The loop counts the dollars of a run from list prices, in dollars per million tokens. These are
