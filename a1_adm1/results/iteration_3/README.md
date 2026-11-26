@@ -118,6 +118,17 @@ the ceiling of 850 dollars, which the maintainer chose during round 3, and the c
 `opus` with the effort xhigh in place of `fable`, whose weekly allowance of the maintainer was
 ending. A copy of the run at the end of round 3 is kept on the computer of the run.
 
+Round 4 started at 11:20, and the six sessions of the Gemini models failed in 0.2 s each: the
+file of the Gemini tool's sign-in was gone. A window of that tool, opened on 25 November to
+sign it in and never closed, had renewed the sign-in every 55 minutes all night, and the file
+was gone between two of its renewals; its log does not show who removed it. The loop gave
+those attempts to the next coding agents, of other models. The maintainer chose to stop the
+run, signed the tool in again and closed the old window. The run was stopped at 11:29 and
+resumed at 11:32 with soft_control_loop `bdc6520`, which has `halt`: a round now stops by
+itself when 3 sessions of coding agents fail within 60 s, and a resumed run plays it again.
+The ten attempts of the first try are set aside in `interrupted/`. The round was planned
+again, with other strategies, and its Gemini sessions ran.
+
 ### Skills
 
 Seven skills were admitted and one was refused, each by a measurement on the 80 evaluation
