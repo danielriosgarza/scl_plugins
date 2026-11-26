@@ -111,7 +111,7 @@ round 2. The programs stand closer to the edge: 7 were above 14500, against 2 in
 fourth place of the search went to attempt 24 with 12860.8, while attempts 22 and 28, with
 15115.4 and 14565.0, had one failed episode each.
 
-### Round 4 (from 11:10)
+### Round 4 (from 11:10), milestone `reach_16000`
 
 Before round 4 the run was stopped at its checkpoint and resumed with the setup of `964cb53`:
 the ceiling of 850 dollars, which the maintainer chose during round 3, and the coordinator
@@ -128,6 +128,37 @@ resumed at 11:32 with soft_control_loop `bdc6520`, which has `halt`: a round now
 itself when 3 sessions of coding agents fail within 60 s, and a resumed run plays it again.
 The ten attempts of the first try are set aside in `interrupted/`. The round was planned
 again, with other strategies, and its Gemini sessions ran.
+
+The plan of the restarted round, by `opus` with the effort xhigh, set the milestone
+`reach_16000`. Attempts 35 to 40 started from the program of attempt 29 with its declared
+values, attempts 31 to 34 from nothing. At 12:40 the workspace of `gpt-6.2-astra` ran out of
+credits, and its two running sessions ended with "Your workspace is out of credits". The
+maintainer chose not to add credits and to go on without it. A failed astra session left its
+program without that revision, and the reviews went to the next model. Fewer than three astra
+sessions at a desk failed within 60 s after that (revision 2 of attempt 38 failed in 5 s), so
+the halt did not stop the round. The coding agents played 16 to 96 episodes at their desks in each session.
+
+| Attempt | Model | Subgoal and strategy | Revision 1 | Revision 2 | At the search |
+|---:|---|---|---|---|---|
+| 40 | haiku | guard_the_capacity, buffer_injection_rescue | 15556.3 / 0 kept | 15560.4 / 0 kept | 15560.4 / 0 |
+| 37 | gemini-4-hydrogen | hold_the_capacity, net_methane_drift_hold | 15539.3 / 0 kept | unchanged | 15539.3 / 0 |
+| 38 | gpt-6.2-astra | hold_the_capacity, net_methane_drift_hold | 15501.0 / 0 kept | failed (out of credits) | 15501.0 / 0 |
+| 36 | haiku | hold_the_capacity, probe_and_revert_hold | 15479.8 / 0 kept, the score of 29 | 15352.2 / 1 dropped | 15479.8 / 0 |
+| 39 | gemini-4-neon | guard_the_capacity, buffer_injection_rescue | 15275.5 / 1 kept | 15351.1 / 0 kept | 15351.1 / 0, fifth, not searched |
+| 35 | gemini-4-carbon | hold_the_capacity, probe_and_revert_hold | 15184.7 / 2 dropped | 15217.0 / 1 kept | 15217.0 / 1, not searched |
+| 32 | gemini-4-hydrogen | load_to_capacity, dual_loop_ph_ic | 14556.2 / 5 dropped | 14509.3 / 0 kept | 14509.3 / 0, not searched |
+| 34 | gemini-4-neon | swift_start, buffer_charge_first | 13700.4 / 1 kept | 14123.9 / 0 kept | 14123.9 / 0, not searched |
+| 31 | gemini-4-carbon | load_to_capacity, dual_loop_ph_ic | 14979.8 / 1 dropped | 15080.2 / 1 dropped | 12226.1 / 0, not searched |
+| 33 | haiku | swift_start, buffer_charge_first | 11735.5 / 3 dropped | 9995.8 / 7 dropped | 11884.0 / 1, not searched |
+
+Attempt 29 itself scores 15479.8 / 0 on these 80 seeds. In 10 of the 18 revisions that were
+evaluated an episode failed (round 3: 11 of 17), and 11 were kept (round 3: 11 of 17). The
+gains on attempt 29 are small, the largest 80.6. Attempt 31, written from nothing, reached
+about 15000 in both of its revisions, but one failed episode in each kept both out. The search
+began at 14:16 on attempts 40, 37, 38 and 36. 713.85 dollars in all at the end of the
+revisions; 162.07 since the end of round 3, the first try included: `gemini-4-carbon` 79.84,
+`gemini-4-neon` 42.77, `gemini-4-hydrogen` 30.13, `gpt-6.2-astra` 5.30, `opus` 3.64, `haiku`
+0.39.
 
 ### Skills
 
