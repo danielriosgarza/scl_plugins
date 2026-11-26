@@ -168,10 +168,12 @@ def test_the_bridge_refuses_what_the_runtime_would_reject(tmp_path):
 def test_the_setup_loads_and_keeps_away_from_the_test_and_validation_seeds():
     setup = config.load_setup(FOLDER / "setup.json")
     used = {*setup.seeds["debug"], *setup.seeds["evaluation"], *setup.baseline["seeds"],
-            *setup.selection["seeds"], *setup.tuning["seeds"]}
+            *setup.selection["seeds"], *setup.tuning["seeds"], *setup.experiments["seeds"]}
     assert not used & {*range(7001, 7051), *range(12001, 12051), *range(11001, 11051)}
     judged = {*setup.seeds["evaluation"], *setup.selection["seeds"]}
-    assert not judged & {*setup.tuning["seeds"], *setup.baseline["seeds"], *setup.seeds["debug"]}
+    assert not judged & {*setup.tuning["seeds"], *setup.baseline["seeds"], *setup.seeds["debug"],
+                         *setup.experiments["seeds"]}
+    assert not {*setup.experiments["seeds"]} & {*setup.tuning["seeds"]}
     assert not {*setup.seeds["evaluation"]} & {*setup.selection["seeds"]}
     assert (setup.kwargs, setup.reuse) == ({"backend": "jax"}, True)
     assert all((FOLDER / path / "program.py").is_file()
@@ -182,6 +184,25 @@ def test_the_setup_loads_and_keeps_away_from_the_test_and_validation_seeds():
     assert setup.budgets["max_steps"] is None
     found = {name for name in dir(checks) if name.startswith("check_")}
     assert {f"check_{milestone['name']}" for milestone in setup.milestones} == found
+    assert [milestone["name"] for milestone in setup.milestones][-1] == "reach_50000"
+
+
+def test_a_round_of_the_setup_is_ten_pairs_of_coding_agents_that_work_on_their_own():
+    setup = config.load_setup(FOLDER / "setup.json")
+    coders = setup.roles["coders"]
+    writing = [entry["model"] for entry in coders if entry["pair"] == "write"]
+    reviewing = [entry["model"] for entry in coders if entry["pair"] == "review"]
+    assert (len(writing), len(reviewing)) == (10, 11)
+    assert setup.explore * setup.writers == len(writing)
+    assert all(writing[place] != writing[place + 1] for place in range(0, 10, 2))
+    assert all(mine != theirs for mine, theirs in zip(writing, reviewing))
+    count = {model: (writing + reviewing).count(model) for model in set(writing + reviewing)}
+    assert count == {"gpt-6.2-astra": 2, "haiku": 6, "gemini-4-neon": 5, "gemini-4-carbon": 4,
+                     "gemini-4-hydrogen": 4}
+    assert (writing.count("gpt-6.2-astra"), reviewing.count("gpt-6.2-astra")) == (1, 1)
+    assert (setup.together, setup.independent, setup.pairs) == (True, True, True)
+    assert "reviewer" not in setup.roles and setup.curate is not None
+    assert all(entry["work"]["minutes"] > 0 for entry in coders)
 
 
 def test_the_first_mark_is_what_the_fixed_rates_scored(env):

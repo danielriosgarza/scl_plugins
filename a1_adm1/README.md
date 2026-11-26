@@ -57,12 +57,14 @@ stated together with this fact, as the benchmark asks of a training that reads t
   Attempts are ranked by failed episodes first and by mean score second, which is the rule of the
   benchmark's own searches (`"failure": "failed"` in the setup).
 - **Rules that no episode can show.** The benchmark checks three rules by reading the code of a
-  controller, and the setup gives them to the reviewer as `rules`: no clock, nothing kept outside
-  the memory, and the observation as the only source. An attempt that breaks one is barred.
+  controller, and the setup gives them as `rules` to the coding agent that judges an attempt: no
+  clock, nothing kept outside the memory, and the observation as the only source. An attempt
+  that breaks one is barred.
 - **Milestones** are marks on the mean score with no failed episode (`checks.py`). The first is
   what the fixed rates 200 and 100 m3/d score on the evaluation seeds, and the others are every
-  1000 m3/d from 10 000 to 17 000. Results of other controllers set no mark and are not shown to
-  the agents.
+  1000 m3/d from 10 000 to 50 000, a ladder that the maintainer fixed. It ends far above what
+  any program has scored, so a run always has a mark ahead. Results of other controllers set no
+  mark and are not shown to the agents.
 - **What the agents are told.** The challenge, the tools and what may be tuned, and nothing
   else. The description in the setup is the task's own document in short: the digester, the aim,
   the two pumps and their limits, the three feeds, what differs between episodes, the nine
@@ -76,8 +78,16 @@ stated together with this fact, as the benchmark asks of a training that reads t
 - **What the agents read of an episode.** The summaries cut an episode at the decisions 8, 16,
   24, 32, 40, 48, 64, 80, 160, 240 and 400 (`phases` in the setup), so the first 12 days are
   shown in parts of 2 days. Equal parts of 71 decisions would hide a collapse, which takes days.
-- **Tuning.** A program may declare up to 10 of its numbers as constants with a range. The loop
-  then searches the values on 48 training episodes that no agent sees: 6 generations of 24
+- **Experiments.** A coding agent works at a desk, a folder of its own, and plays its program
+  there before it hands it in: 96 episodes for one attempt, at most 16 in one play, on 32
+  training seeds that nothing else uses (`experiments` in the setup). A play of 16 episodes
+  takes a little over 2 minutes. The agent reads the mean score, the failed episodes, a table
+  of the episodes and, on disk, every step of every episode with the true values of the section
+  above. The repairs and the revisions of an attempt share its 96 episodes. A coding agent
+  that writes a critique has a desk and 96 episodes of its own.
+- **Tuning.** A program may declare up to 10 of its numbers as constants with a range. For the
+  4 best programs of a round (`"best": 4`), as they stand with the values that they declare, the
+  loop then searches the values on 48 training episodes that no agent sees: 6 generations of 24
   candidates, each drawn across the whole of its ranges around the best of the generation
   before. The first 4 generations each rank on 8 of the 48 episodes. The last 2 rank on all 48,
   because 8 episodes cannot show a collapse that 1 digester in 48 has, and a final on all 48
@@ -91,6 +101,11 @@ stated together with this fact, as the benchmark asks of a training that reads t
   that each play one episode after another (`"reuse": true`), so the model is compiled once per
   child. An episode then takes about 11 s of one processor core. On the backend `reference` it
   takes about 27 s, and the scores differ by less than 0.001 m3/d.
+  Every child holds itself to one processor (`"pin": true`). Without that a child of the
+  engine starts 98 threads on the 14 processors of the computer of the runs. Measured there on
+  2026-11-25 with about 9.5 processors free: 14 children played 16.9 episodes a minute without
+  `pin` and 33.8 with it, and in batches of 16 lanes 56.7 and 83.6, with the same scores to
+  every digit. `OMP_NUM_THREADS=1` and the flags of XLA for one thread changed no time.
 - **Lanes.** A search plays the episodes of a candidate side by side, 16 in one call of the
   engine (`Loading.lanes`, and `"lanes": 16` in the setup). On 4 cores that is 1.5 s for an
   episode in place of 4.4 s. Lane 0 plays the episode of its seed, to 12 digits the same as
@@ -110,6 +125,7 @@ microbesGYM has one rule for seeds: train, test, validate.
 | Baseline | 6001 to 6020 | training | The agents |
 | Debug | 6001, 6002 | training | The coding agent |
 | Evaluation | 6021 to 6100 | training | The agents |
+| Experiments | 32001 to 32032 | training | The coding agent of an attempt, at its desk |
 | Tuning | 31001 to 31048 | training | No agent. The loop searches the constants of a program here |
 | Selection | 30001 to 30100 | training | No agent. The loop picks its winner here |
 | Test | 7001 to 7050 | development | A person, after a run has ended, with `bridge.py` |
@@ -117,8 +133,8 @@ microbesGYM has one rule for seeds: train, test, validate.
 
 The loop starts every episode as a training episode, and the benchmark refuses a development or
 a final seed there, so a run cannot play a test or a validation seed. The task lists the training
-seeds 6001 to 6100. The seeds from 30001 and from 31001 are further training episodes, which the
-benchmark's own trainings also play.
+seeds 6001 to 6100. The seeds from 30001, from 31001 and from 32001 are further training
+episodes, which the benchmark's own trainings also play.
 
 **Nothing may play a seed from 12001 to 12050 before the one validation run.** No iteration is
 allowed after that run, and nothing is changed because of it.
@@ -149,22 +165,61 @@ tested with microbesGYM at commit `43491a5`.
 ## Train
 
 ```bash
-uv run scl agents setup.json                      # every agent answers once
-uv run scl run setup.json --workdir runs/run_2    # add --resume to continue a stopped run
+uv run scl agents setup.json                      # every agent answers once, and works once at a desk
+uv run scl run setup.json --workdir runs/run_3    # add --resume to continue a stopped run
 ```
 
 A run asks the agents of the setup through the command-line tools of your own subscriptions. The
 agents, the limits of a run (`budgets`, `explore`, `patience`) and the `prices` in `setup.json`
-are set by the maintainer for each run. The setup as it is here is that of run 2:
+are set by the maintainer for each run. The setup as it is here is that of run 3, whose round is
+described in the README of soft_control_loop under "A round of independent coders":
 
-- **Agents.** The coordinator is `fable`. The five coding agents, the reviewer (`sonnet`) and the
-  skill agent (`opus`) are those of run 1.
-- **Dollars.** The maintainer's limit for run 2 is 100 dollars. The loop asks no agent once the
-  dollars have reached `budgets.dollars`, and it starts a round only if there is room for one
-  like the last. An answer that is on its way when the limit is reached is still paid, so the
-  setup stops at 97.
-- **Rounds.** A round tries 5 strategies, one for each coding agent (`explore`). A run has at most
-  50 attempts, which is 10 rounds, and ends after 3 rounds in a row without progress (`patience`).
+- **Agents.** The coordinator was `fable` for the rounds 1 to 3 and is `opus` from round 4, by the maintainer's choice, and the skill agent is `opus`. A round has 21 coding
+  agents, which the maintainer chose on 2026-11-25: 2 of `gpt-6.2-astra`, 6 of `haiku` and 13 of
+  Gemini (5 of `gemini-4-neon`, 4 of `gemini-4-carbon`, 4 of `gemini-4-hydrogen`). 10 of them
+  write a program and 11 review one. There is no reviewer of its own: a coding agent of another
+  model critiques a program before each revision, and one judges the attempt at its end.
+- **Rounds.** A round tries 5 strategies, and 2 coding agents of different models write each, so
+  a round has 10 attempts (`explore` and `writers`). All are worked on at the same time. The
+  coordinator chooses the strategies from any open subgoal and writes no guidance, and a coding
+  agent reads its subgoal, its strategy and the skills, and nothing of another attempt. A
+  program may be revised 2 times. The maintainer chose on 2026-11-25 to test the new round
+  once, with 10 attempts in the setup. When that round had run without an error he let the
+  same run go on, for a second round and then for two more, so the setup now has 40
+  attempts, which are four rounds. A run ends after 3 rounds in a row without progress
+  (`patience`).
+- **Skills.** The skill agent is offered every program of a round that broke no rule, the best
+  first. A skill enters the library only if the program is clearly worse without it, and its
+  measured effect is kept with it (`curate`).
+- **Where a coding agent works.** Its tool runs confined to its desk. `work` in the setup names
+  what the tool needs beside the desk: its own program to read, and of the folder of its sign-in
+  only the named entries, so that no coding agent reads the sessions and the history that the
+  tools keep there. A session at a desk may take 30 minutes, for every model: an attempt may
+  play 96 episodes, which is 6 plays of 16 at about 2.4 minutes each, and longer when many
+  desks play at once. Every result of a play tells the agent the minutes that it has left.
+  Each revision adds 48 episodes (`experiments.revision`): in round 2 most writers had used
+  their 96 in the first session, and seven revisions that were not played failed episodes.
+- **Halt.** A round stops when 3 sessions of coding agents end with an error within 60 s
+  (`"halt"`), and `--resume` plays it again. In round 4 of run 3 the Gemini tool lost its
+  sign-in, six sessions failed in the same second, and their attempts went on with other
+  models until the run was stopped by hand.
+- **Dollars.** The loop asks no agent once the dollars have reached `budgets.dollars`, and it
+  starts a round only if there is room for one like the last. An answer that is on its way when
+  the limit is reached is still paid, and with a round that works on all its attempts at once,
+  up to 21 sessions can be on their way. The maintainer's limit for the test of the new round
+  was 200 dollars, so the setup stopped at 197. Two tries of the test were stopped and had
+  used 44.61, which the limit does not include. The round of the third try came to about 150
+  dollars, of which about 140 were for the Gemini models, and the maintainer then raised the
+  limit to 500 dollars as long as the dollars are those of the Gemini models, and the setup
+  stopped at 480. Two rounds came to 344.48 dollars. For two more rounds the setup has a
+  ceiling of 800 dollars, which the maintainer raised to 850 during round 3: the rounds cost
+  159, 184 and about 209 dollars, and a round that the limit cuts off counts for nothing. One
+  session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
+  for `haiku`, 2.2 for `gemini-4-neon`, 1.3 for `gemini-4-hydrogen` and 5 to 7 for
+  `gemini-4-carbon`, whose list price has no cached price. The tokens of a session that is
+  stopped at its time are counted from the turns that its tool had printed; the log says
+  `uncounted` when it had printed none, and the output is kept in the folder `stopped` of the
+  attempt.
 - **Prices** are the list prices of the providers on 2026-11-24, in dollars per million tokens of
   input, output and input read from the provider's cache. `results/README.md` gives the table
   with its sources. The dollars measure use at these prices. They are not what a subscription
@@ -178,11 +233,11 @@ the benchmark's own runner:
 ```bash
 # 1. The computer gives the benchmark's numbers: this must print a mean of 14834.3.
 uv run python bridge.py controller ../../microbesGYM_v2/results/a1_adm1/loading/pi/controller.json \
-    --split development --backend jax --workers 4 --out results/iteration_2/pi_check.json
+    --split development --backend jax --workers 4 --out results/iteration_3/pi_check.json
 
 # 2. The program on the test seeds.
-uv run python bridge.py program runs/run_2/attempts/NNN --skills runs/run_2/library \
-    --split development --backend jax --workers 4 --out results/iteration_2/test.json
+uv run python bridge.py program runs/run_3/attempts/NNN --skills runs/run_3/library \
+    --split development --backend jax --workers 4 --out results/iteration_3/test.json
 ```
 
 What the test shows may change the setup, and the loop then trains again. Every iteration and its
