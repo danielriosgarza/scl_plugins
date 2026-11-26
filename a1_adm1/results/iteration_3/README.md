@@ -1,7 +1,10 @@
 # Iteration 3: run 3, rounds of ten independent coding agents (2026-11-25 and 26)
 
-This file records what was changed after run 2 and why, the two rounds of run 3, what the run
-showed to be wrong in the loop, and what is changed for the next round. The files of the run
+This file records what was changed after run 2 and why, the rounds of run 3, what the run
+showed to be wrong in the loop, and what is changed for the next round. Rounds 1 and 2 ran
+first, and the run ended. The maintainer then let it go on for rounds 3 and 4, with the
+changes of the section "What is changed for the next round"; round 4 runs at the time of
+writing. The files of the run
 are beside it: the setup, the result, the log, the selected program and the library of skills.
 
 ## Why the loop changed
@@ -72,9 +75,48 @@ Attempts 11 to 16 started from the program of attempt 4, attempts 17 to 20 from 
 | 14 | gemini-4-hydrogen | keep_the_high_load, extrapolated_reserve_hold | kept | 13999.0 / 1 dropped | not searched, 13646.6 / 0 | |
 | 18 | haiku | load_each_digester, sludge_strength_feedforward | unchanged | | not searched, 7340.9 / 0 | |
 
-Selected: attempt 11, the selected program of the run. It is the only finalist of the run with
-no failed selection episode. Milestone met: `reach_14000`. 183.14 dollars by the loop's count
-of the round.
+Selected: attempt 11. It is the only finalist of rounds 1 to 3 with no failed selection
+episode. Milestone met: `reach_14000`. 183.14 dollars by the loop's count of the round.
+
+### Round 3 (05:10 to 11:09), milestone `reach_15000`
+
+The run was resumed with soft_control_loop `eb97470` and the setup of scl_plugins `0bc40aa`:
+800 dollars, 40 attempts, and 48 experiment episodes added at each revision. Attempts 21, 22,
+25, 26, 29 and 30 started from the program of attempt 11 with its declared values, the others
+from nothing. Every revision session played at its desk, 16 to 88 episodes.
+
+| Attempt | Model | Subgoal and strategy | Revision 1 | Revision 2 | After the search | Selection |
+|---:|---|---|---|---|---|---|
+| 29 | gpt-6.2-astra | brisk_start, acid_setpoint_start | 15276.4 / 1 kept | 15260.3 / 0 kept | 15479.8 / 0, second | **15980.4 / 1** |
+| 30 | gemini-4-neon | brisk_start, acid_setpoint_start | 15291.4 / 0 kept | 15369.4 / 0 kept | 15428.1 / 0, quarter | 15509.7 / 6 |
+| 25 | gemini-4-neon | hold_the_edge, asymmetric_deadband_hold | 14988.8 / 1 dropped | 15100.4 / 0 kept | 15200.0 / 0, third | 15502.6 / 2 |
+| 24 | haiku | load_by_sludge, inhibition_window_balance | 12180.5 / 0 kept | unchanged | 12860.8 / 0, third | 13248.0 / 0 |
+| 22 | gemini-4-carbon | guard_the_edge, joint_ph_acid_margin | 15030.6 / 1 kept | 15115.4 / 1 kept | not searched, 15115.4 / 1 | |
+| 21 | haiku | guard_the_edge, joint_ph_acid_margin | unchanged | | not searched, 14710.9 / 3 | |
+| 28 | gemini-4-hydrogen | hold_the_edge, zero_drift_hold | 14534.0 / 1 kept | 14565.0 / 1 kept | not searched, 14565.0 / 1 | |
+| 26 | gemini-4-carbon | hold_the_edge, asymmetric_deadband_hold | 14797.9 / 2 dropped | 14825.6 / 1 dropped | not searched, 14836.7 / 1 | |
+| 23 | gemini-4-hydrogen | load_by_sludge, inhibition_window_balance | 13466.5 / 7 dropped | 14362.9 / 2 dropped | not searched, 14290.7 / 1 | |
+| 27 | haiku | hold_the_edge, zero_drift_hold | 7086.4 / 4 dropped | 10301.7 / 0 kept | not searched, 10301.7 / 0 | |
+
+Selected: attempt 29. Milestone met: `reach_15000`. The quarter step of the search was kept for
+the first time (attempt 30), and those values failed 6 of the 100 selection episodes. One skill
+was admitted, `carb_linked_sludge_floor` from attempt 24: 12860.8 with it and 12245.9 with the
+plain piece, both with no failed episode. 204.996 dollars by the loop's count of the round,
+207.30 by the usage of the models: `gemini-4-carbon` 126.02, `gemini-4-neon` 38.01,
+`gemini-4-hydrogen` 23.71, `gpt-6.2-astra` 8.29, `fable` 6.82, `opus` 4.11, `haiku` 0.34.
+551.78 dollars for rounds 1 to 3.
+
+In 11 of 17 revisions of round 3 that were evaluated an episode failed, against 8 of 18 in
+round 2. The programs stand closer to the edge: 7 were above 14500, against 2 in round 2. The
+fourth place of the search went to attempt 24 with 12860.8, while attempts 22 and 28, with
+15115.4 and 14565.0, had one failed episode each.
+
+### Round 4 (from 11:10)
+
+Before round 4 the run was stopped at its checkpoint and resumed with the setup of `964cb53`:
+the ceiling of 850 dollars, which the maintainer chose during round 3, and the coordinator
+`opus` with the effort xhigh in place of `fable`, whose weekly allowance of the maintainer was
+ending. A copy of the run at the end of round 3 is kept on the computer of the run.
 
 ### Skills
 
