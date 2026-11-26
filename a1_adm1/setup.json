@@ -414,7 +414,7 @@
   }
  ],
  "budgets": {
-  "dollars": 800,
+  "dollars": 850,
   "attempts": 40,
   "episodes": 80,
   "max_steps": null

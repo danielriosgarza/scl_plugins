@@ -208,8 +208,9 @@ described in the README of soft_control_loop under "A round of independent coder
   dollars, of which about 140 were for the Gemini models, and the maintainer then raised the
   limit to 500 dollars as long as the dollars are those of the Gemini models, and the setup
   stopped at 480. Two rounds came to 344.48 dollars. For two more rounds the setup has a
-  ceiling of 800 dollars: a round costs about 185, and a round that the limit cuts off counts
-  for nothing. One session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
+  ceiling of 800 dollars, which the maintainer raised to 850 during round 3: the rounds cost
+  159, 184 and about 209 dollars, and a round that the limit cuts off counts for nothing. One
+  session at a desk cost 3.3 dollars for `gpt-6.2-astra`, 0.03
   for `haiku`, 2.2 for `gemini-4-neon`, 1.3 for `gemini-4-hydrogen` and 5 to 7 for
   `gemini-4-carbon`, whose list price has no cached price. The tokens of a session that is
   stopped at its time are counted from the turns that its tool had printed; the log says
