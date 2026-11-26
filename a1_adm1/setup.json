@@ -7,6 +7,10 @@
  },
  "reuse": true,
  "pin": true,
+ "halt": {
+  "failures": 3,
+  "seconds": 60
+ },
  "observables": [
   "ch4_flow",
   "co2_flow",

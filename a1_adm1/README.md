@@ -199,6 +199,10 @@ described in the README of soft_control_loop under "A round of independent coder
   desks play at once. Every result of a play tells the agent the minutes that it has left.
   Each revision adds 48 episodes (`experiments.revision`): in round 2 most writers had used
   their 96 in the first session, and seven revisions that were not played failed episodes.
+- **Halt.** A round stops when 3 sessions of coding agents end with an error within 60 s
+  (`"halt"`), and `--resume` plays it again. In round 4 of run 3 the Gemini tool lost its
+  sign-in, six sessions failed in the same second, and their attempts went on with other
+  models until the run was stopped by hand.
 - **Dollars.** The loop asks no agent once the dollars have reached `budgets.dollars`, and it
   starts a round only if there is room for one like the last. An answer that is on its way when
   the limit is reached is still paid, and with a round that works on all its attempts at once,
