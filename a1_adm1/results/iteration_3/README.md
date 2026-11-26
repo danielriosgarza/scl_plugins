@@ -322,4 +322,24 @@ DTQC. For attempt 8 the quarter values still fail one episode, and the declared 
 
 ## Test
 
-Not run. The test on the seeds 7001 to 7050 waits for the maintainer's word.
+On the maintainer's word, the selected program (attempt 37, with the values the run selected)
+was played once on the test seeds 7001 to 7050, the split `development`, through the
+benchmark's own runner (`test_check.json`, `bridge.py --split development`, backend `jax`,
+microbesGYM 43491a5, 187 s, 26 November 18:28). Before the play every seed was checked to be one
+of 7001 to 7050 and none of the final seeds. No agent was asked, and nothing of the program or
+the run was changed because of the result. The four lines of the benchmark are read from its
+development scorecards (`results/a1_adm1/loading/<controller>/development.scorecard.json` of
+microbesGYM_v2), made on another computer, so the last digits can differ.
+
+| Controller | Net methane | Collapsed of 50 | Start phase | Middle phase | End phase | Run-out |
+|---|---:|---:|---:|---:|---:|---:|
+| SAC | 15518.7 | 0 | 12623.3 | 16216.4 | 16268.7 | 16288.9 |
+| **Selected program of run 3 (attempt 37)** | **15474.7** | **0** | 12589.4 | 16158.2 | 16233.9 | 16261.2 |
+| DTQC | 15402.1 | 1 | 13403.1 | 15873.8 | 15930.0 | 15942.4 |
+| MPC | 14965.7 | 0 | 11166.8 | 15869.5 | 15961.5 | 16031.8 |
+| PI | 14834.3 | 0 | 10828.7 | 15729.7 | 15941.6 | 15981.5 |
+
+The program is second of the five: 44 below SAC, 73 above DTQC, which loses one digester here,
+509 above MPC and 640 above PI. It is 814 below DTQC in the start phase and above it in every
+later phase, and within 60 of SAC in every phase. Its lowest pH was 6.663 on the mean of the 50
+episodes and 6.564 at the lowest.
