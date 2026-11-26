@@ -3,8 +3,8 @@
 This file records what was changed after run 2 and why, the rounds of run 3, what the run
 showed to be wrong in the loop, and what is changed for the next round. Rounds 1 and 2 ran
 first, and the run ended. The maintainer then let it go on for rounds 3 and 4, with the
-changes of the section "What is changed for the next round"; round 4 runs at the time of
-writing. The files of the run
+changes of the section "What is changed for the next round". The run ended after round 4, on
+26 November at 18:08. The files of the run
 are beside it: the setup, the result, the log, the selected program and the library of skills.
 
 ## Why the loop changed
@@ -30,11 +30,14 @@ maintainer let it go on as run 3. Its folder on the computer of the runs is `run
 
 ## The run
 
-Two rounds, 20 attempts, 11 hours, no error, no session stopped at its time, no uncounted
-session. Round 1 ran with a limit of 197 dollars and 10 attempts. The maintainer then raised the
-limit to 500 dollars as long as the dollars are those of the Gemini models, and the run was
-resumed with 480 dollars and 50 attempts. It ended by itself: "the dollar budget has no room for
-a round like the last, which cost $183.14".
+Four rounds, 40 attempts, from 25 November 17:33 to 26 November 18:08, 723.22 dollars. Round 1
+ran with a limit of 197 dollars and 10 attempts. The maintainer then raised the limit to 500
+dollars as long as the dollars are those of the Gemini models, and the run was resumed with 480
+dollars and 50 attempts. It ended after round 2: "the dollar budget has no room for a round like
+the last, which cost $183.14". The maintainer then let it go on for two more rounds, with a
+ceiling of 800 dollars and then 850, and 40 attempts. Rounds 1 to 3 ran with no error. In round
+4 the sign-in of the Gemini tool was lost and later the credits of `gpt-6.2-astra` ran out
+(below). The run ended by itself after round 4: "the attempts budget is spent".
 
 All scores are the mean net methane in m3/d on the 80 evaluation seeds 6021 to 6100, with the
 failed episodes of 80 behind the bar. The selection replays the 4 best of a round on the 100
@@ -160,10 +163,30 @@ revisions; 162.07 since the end of round 3, the first try included: `gemini-4-ca
 `gemini-4-neon` 42.77, `gemini-4-hydrogen` 30.13, `gpt-6.2-astra` 5.30, `opus` 3.64, `haiku`
 0.39.
 
+The search kept the halfway values of attempt 37, 15567.3 / 0 (on the way: tuned 15417.5 / 1,
+second 15399.6 / 1, third 15394.7 / 1). For attempts 36, 38 and 40 it found no better values,
+and they kept the declared ones.
+
+| Attempt | After the search | Selection |
+|---:|---|---|
+| 37 | 15567.3 / 0, halfway | **16079.8 / 0** |
+| 40 | 15560.4 / 0, declared | 16070.9 / 2 |
+| 36 | 15479.8 / 0, declared | 15980.4 / 1 |
+| 38 | 15501.0 / 0, declared | 15945.7 / 1 |
+
+Selected: attempt 37, built on attempt 29 by `gemini-4-hydrogen`. Milestones met by the run:
+`hold` and `reach_10000` to `reach_15000`; `reach_16000` was not met. Two skills were admitted
+and one refused (see "Skills"). 168.145 dollars by the loop's count of the round, 171.43 by the
+usage of the models from the end of round 3, the first try included: `gemini-4-carbon` 80.23,
+`gemini-4-neon` 44.12, `gemini-4-hydrogen` 30.56, `opus` 10.82, `gpt-6.2-astra` 5.30, `haiku`
+0.40. 723.22 dollars for the run. A copy of the run at the end of round 4 is kept on the
+computer of the run, beside the one of round 3.
+
 ### Skills
 
-Seven skills were admitted and one was refused, each by a measurement on the 80 evaluation
-seeds: the program with the skill against the program with a plain piece in its place.
+Ten skills were admitted and two were refused, each by a measurement on the 80 evaluation
+seeds: the program with the skill against the program with a plain piece in its place. The
+library ends with the ten.
 
 | Skill | From attempt | With the skill | With the plain piece |
 |---|---:|---:|---:|
@@ -174,49 +197,59 @@ seeds: the program with the skill against the program with a plain piece in its 
 | `gas_paced_carb_ramp` | 20 | 14038.0 / 0 | 6468.5 / 34 |
 | `ic_settling_forecast` | 13 | 13770.1 / 0 | 13464.5 / 3 |
 | `sludge_buffer_estimate` | 17 | 13757.2 / 0 | 13078.1 / 2 |
+| `carb_linked_sludge_floor` | 24 | 12860.8 / 0 | 12245.9 / 0 |
+| `sludge_washout_ceiling` | 34 | 14123.9 / 0 | 8839.5 / 41 |
+| `asymmetric_ph_lookahead` | 34 | 14123.9 / 0 | 14084.0 / 2 |
 | `settled_digester_gate`, refused | 4 | 13699.3 | 13699.4 |
+| `buffer_ratio_carb_cap`, refused | 35 | 15217.0 / 1 | 15217.9 / 1 |
 
 The programs of round 2 used the skills of round 1: `startup_vfa_wave_done` in 7 of them and
 `capped_share_trend` in 5.
 
 ### Effort
 
-| Model | Dollars at list prices |
-|---|---:|
-| gemini-4-carbon | 204.36 |
-| gemini-4-neon | 72.08 |
-| gemini-4-hydrogen | 34.28 |
-| fable (coordinator) | 14.20 |
-| gpt-6.2-astra | 11.64 |
-| opus (skill agent) | 7.26 |
-| haiku | 0.67 |
-| All | 344.48 |
+| Model | Dollars at list prices, rounds 1 and 2 | Dollars at list prices, the run |
+|---|---:|---:|
+| gemini-4-carbon | 204.36 | 410.62 |
+| gemini-4-neon | 72.08 | 154.21 |
+| gemini-4-hydrogen | 34.28 | 88.54 |
+| gpt-6.2-astra | 11.64 | 25.22 |
+| opus (skill agent; coordinator in round 4) | 7.26 | 22.20 |
+| fable (coordinator in rounds 1 to 3) | 14.20 | 21.02 |
+| haiku | 0.67 | 1.41 |
+| All | 344.48 | 723.22 |
 
-The Gemini models are 310.72 dollars and the others 33.76. The list price of
-`gemini-4-carbon` has no price for cached input, so its cached input is counted at the input
-price: a session of it came to 6 to 13.5 dollars.
+In the run the Gemini models are 653.37 dollars and the others 69.85; `gemini-4-carbon` alone
+is 57 %. The list price of `gemini-4-carbon` has no price for cached input, so its cached input
+is counted at the input price: a session of it came to 6 to 20 dollars.
 
-Episodes played: 4702 experiment, 5840 evaluation, 25056 tuning, 800 selection, 1200 trial of a
-skill, 116 debug, 60 baseline.
+Episodes played in rounds 1 and 2: 4702 experiment, 5840 evaluation, 25056 tuning, 800
+selection, 1200 trial of a skill, 116 debug, 60 baseline. In the run: 10960 experiment, 11920
+evaluation, 49968 tuning, 1600 selection, 1760 trial of a skill, 230 debug, 60 baseline.
 
 ## Like for like with the benchmark, on training seeds
 
-The selected program was played through the benchmark's own runner on the 100 training seeds
+The selected programs were played through the benchmark's own runner on the 100 training seeds
 6001 to 6100 (`training_check.json`, `bridge.py --split training`, backend `jax`, microbesGYM
-43491a5). 80 of these seeds are the evaluation seeds of the loop. The four lines of the
+43491a5): the one selected after round 2, and after the run the one selected after round 4 and
+attempt 29, the best of round 3. 80 of these seeds are the evaluation seeds of the loop. The four lines of the
 benchmark are read from its training scorecards and were not played again. Those were made on
 another computer, so the last digits can differ.
 
 | Controller | Net methane | Collapsed of 100 | Start phase | Middle phase | End phase | Run-out |
 |---|---:|---:|---:|---:|---:|---:|
-| Selected program of run 3 | 14922.1 | 0 | 10943.6 | 15860.4 | 15973.2 | 15996.6 |
+| **Selected program of run 3 (attempt 37)** | **15599.9** | 0 | 12624.7 | 16295.3 | 16392.2 | 16403.4 |
+| Attempt 29, the best of round 3 | 15516.1 | 0 | 12502.7 | 16223.7 | 16315.1 | 16328.2 |
+| Attempt 11, selected after round 2 | 14922.1 | 0 | 10943.6 | 15860.4 | 15973.2 | 15996.6 |
 | PI | 14953.0 | 0 | 10850.5 | 15870.8 | 16086.4 | 16119.7 |
 | MPC | 15028.6 | 0 | 10977.7 | 16011.4 | 16071.3 | 16178.2 |
 | SAC | 15645.5 | 0 | 12714.6 | 16355.9 | 16400.6 | 16418.4 |
 | DTQC | 15878.9 | 0 | 13543.3 | 16431.7 | 16493.9 | 16505.7 |
 
-The program is 31 below the PI controller and 107 below the MPC. It is not above the benchmark.
-This table is for the maintainer. No agent of the loop is shown it or any number of it.
+The selected program of the run is 647 above the PI controller and 571 above the MPC, 46 below
+SAC and 279 below DTQC. Most of the gap to DTQC is in the start phase, 919; in the middle and
+end phases and the run-out it is within 140. After round 2 the program was 31 below the PI
+controller. This table is for the maintainer. No agent of the loop is shown it or any number of it.
 
 ## What the run showed to be wrong
 
@@ -231,8 +264,28 @@ This table is for the maintainer. No agent of the loop is shown it or any number
    the limit fail.
 3. **A program can come back unchanged.** Attempt 12 handed in the program that it started
    from, and ended as a copy of attempt 4.
-4. **One model is most of the dollars.** `gemini-4-carbon` is 59 % of the dollars. It wrote the
-   selected program of round 1, and none of its programs of round 2 reached the search.
+4. **One model is most of the dollars.** `gemini-4-carbon` is 59 % of the dollars of rounds 1
+   and 2 (57 % of the run). It wrote the selected program of round 1, and none of its programs
+   of round 2 reached the search.
+
+Rounds 3 and 4, after the changes below, showed these:
+
+5. **Revisions still fail rare episodes.** With 48 more desk episodes at each revision, an
+   episode failed in 11 of 17 evaluated revisions of round 3 and 10 of 18 of round 4. The
+   desk plays 16 episodes at a time and does not show a failure of 1 in 80.
+6. **A program with one failed episode is kept out, however high it stands.** Attempt 31 of
+   round 4, written from nothing, reached 14979.8 and 15080.2 in its revisions, each with one
+   failed episode, and both were dropped; attempt 36, with the score of its parent, went to
+   the search instead. In round 3 the same kept out attempts 22 and 28.
+7. **Gains on one program get small.** Six attempts of round 4 started from attempt 29. The best
+   gained 87.5 on the evaluation seeds and 83.8 on the benchmark's training seeds, and four
+   of them were handed in unchanged, or in a version never played as it stands, at some
+   session (36, 37, 39, 40).
+8. **The run depends on the sign-ins and credits of outside tools.** In round 4 the sign-in of
+   the Gemini tool was lost, and later the workspace of `gpt-6.2-astra` ran out of credits.
+   The first is now caught by `halt`; the second only removed one model from the round.
+9. **The gap to the benchmark is the start.** On the training seeds the selected program is
+   within 140 of DTQC in the middle and end phases and 919 below it in the start phase.
 
 ## What is changed for the next round
 

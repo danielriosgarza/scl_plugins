@@ -404,4 +404,4 @@ on what was changed for the next iteration and why.
 | Iteration | Run | Selected program | Selection seeds: mean score, failed | Test seeds: mean score, failed | Dollars at list prices |
 |---|---|---|---|---|---:|
 | [1](iteration_1/README.md) | Run 1, 2026-11-24, 3 rounds, 15 attempts | Attempt 2, gpt-6.2-astra | 10277.3, 0 of 100 | Not run, by the maintainer's decision | 43.52 |
-| [3](iteration_3/README.md) | Run 3, 2026-11-25 and 26, 2 rounds, 20 attempts | Attempt 11, gemini-4-neon | 15327.6, 0 of 100 | Not run yet | 344.48 |
+| [3](iteration_3/README.md) | Run 3, 2026-11-25 and 26, 4 rounds, 40 attempts | Attempt 37, gemini-4-hydrogen | 16079.8, 0 of 100 | Not run yet | 723.22 |
