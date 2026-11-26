@@ -153,8 +153,35 @@ This table is for the maintainer. No agent of the loop is shown it or any number
 ## What is changed for the next round
 
 - soft_control_loop has `experiments.revision`: every revision adds episodes to the budget of
-  the writer's desk (point 1).
-- Points 2 to 4 are open.
+  the writer's desk (point 1). The setup gives 48.
+- The chain of searched values has one more step (point 2). When the tuned values, the next
+  best of the search and the values halfway all rank worse on the evaluation seeds than the
+  declared ones, the loop now also plays the values a quarter of the way from the declared to
+  the tuned ones.
+- Points 3 and 4 are open, and so is the rare failure that neither 48 nor 80 seeds show.
+
+## The new step, measured after the run
+
+The quarter step was measured on the two programs whose search was lost, with the loop's own
+evaluation, on copies and at no dollars. The run's result is not changed by it: the selected
+program of the run is the one with the declared values.
+
+| Program | Declared | Tuned | Second | Third | Halfway | Quarter |
+|---|---|---|---|---|---|---|
+| Attempt 11, 80 evaluation seeds | 14894.2 / 0 | 15211.2 / 4 | 15246.7 / 1 | 15244.8 / 1 | 15100.5 / 1 | **15084.8 / 0** |
+| Attempt 8, 80 evaluation seeds | 12679.5 / 0 | 13474.5 / 2 | 13446.4 / 2 | 13387.1 / 2 | 13311.8 / 1 | 13010.2 / 1 |
+
+For attempt 11 the step would have kept the quarter values. That program has 15536.2 with no
+failed episode on the 100 selection seeds, against 15327.6 for the declared values. On the
+benchmark's 100 training seeds 6001 to 6100, through the benchmark's runner:
+
+| Controller | Net methane | Collapsed of 100 | Start phase | Middle phase | End phase | Run-out |
+|---|---:|---:|---:|---:|---:|---:|
+| Attempt 11 with the quarter values | 15113.0 | 0 | 11258.1 | 16031.4 | 16122.1 | 16140.6 |
+| Attempt 11 as the run selected it | 14922.1 | 0 | 10943.6 | 15860.4 | 15973.2 | 15996.6 |
+
+This is 160 above the PI controller and 84 above the MPC, and 533 below SAC and 766 below
+DTQC. For attempt 8 the quarter values still fail one episode, and the declared ones stay.
 
 ## Test
 
