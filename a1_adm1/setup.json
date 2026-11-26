@@ -369,7 +369,8 @@
   ],
   "episodes": 96,
   "each": 16,
-  "lanes": 16
+  "lanes": 16,
+  "revision": 48
  },
  "phases": [
   0,
@@ -413,8 +414,8 @@
   }
  ],
  "budgets": {
-  "dollars": 480,
-  "attempts": 50,
+  "dollars": 800,
+  "attempts": 40,
   "episodes": 80,
   "max_steps": null
  },
