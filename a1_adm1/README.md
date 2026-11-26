@@ -174,7 +174,7 @@ agents, the limits of a run (`budgets`, `explore`, `patience`) and the `prices` 
 are set by the maintainer for each run. The setup as it is here is that of run 3, whose round is
 described in the README of soft_control_loop under "A round of independent coders":
 
-- **Agents.** The coordinator is `fable` and the skill agent is `opus`. A round has 21 coding
+- **Agents.** The coordinator was `fable` for the rounds 1 to 3 and is `opus` from round 4, by the maintainer's choice, and the skill agent is `opus`. A round has 21 coding
   agents, which the maintainer chose on 2026-11-25: 2 of `gpt-6.2-astra`, 6 of `haiku` and 13 of
   Gemini (5 of `gemini-4-neon`, 4 of `gemini-4-carbon`, 4 of `gemini-4-hydrogen`). 10 of them
   write a program and 11 review one. There is no reviewer of its own: a coding agent of another

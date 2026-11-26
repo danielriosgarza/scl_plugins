@@ -465,9 +465,9 @@
  "roles": {
   "coordinator": {
    "backend": "claude",
-   "model": "fable",
-   "effort": "high",
-   "timeout": 600
+   "model": "opus",
+   "effort": "xhigh",
+   "timeout": 1500
   },
   "coders": [
    {
